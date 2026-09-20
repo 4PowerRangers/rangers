@@ -25,7 +25,7 @@ class InternalLLMAgentAdapter:
         self._metadata = AgentMetadata(
             adapter_name="internal-llm",
             adapter_version="1",
-            agent_name="tempera-internal-agent",
+            agent_name="ranger-internal-agent",
             agent_version=agent_version,
             provider=provider,
             model=model,

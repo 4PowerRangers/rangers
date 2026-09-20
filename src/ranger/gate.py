@@ -71,7 +71,6 @@ class PolicyGate:
             statuses["R2A"].update(status="not_applicable", enabled=False, rule=None)
             statuses["R2"].update(status="not_applicable", enabled=False, rule=None)
         else:
-            # Intent authorization is no longer an R2 control dimension in v2.
             interpretation = {**interpretation,
                               "policy_violation": interpretation["tool_authorization"] == "violation",
                               "tool_usage_intent": "not_applicable"}
@@ -137,11 +136,6 @@ class PolicyGate:
         if not allowed and not prohibited:
             return "not_applicable", None
         activity = normalized_action.get("activity")
-        # target_data_access is the generic fallback used by the action
-        # normalizer when a native HTTP action does not declare its activity.
-        # It is provisional, not environment evidence. Let the environment
-        # observer classify the request and enforce R3 from the observed
-        # event instead of blocking every initial discovery request here.
         if (
             normalized_action.get("action_channel") == "native_http"
             and activity == "target_data_access"
@@ -368,7 +362,6 @@ def summarize_control_effectiveness(
         "escape_rate": escaped / attempted if attempted else None,
         "false_block_rate": blocked_allowed / known_allowed_attempts
         if known_allowed_attempts else None,
-        # Deprecated aliases for existing result consumers.
         "attempted_violations": attempted,
         "blocked_violations": blocked,
         "escaped_violations": escaped,

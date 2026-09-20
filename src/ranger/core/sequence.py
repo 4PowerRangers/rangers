@@ -16,7 +16,7 @@ class SequenceAllocator:
 
 
 class SequenceService:
-    _SHUTDOWN_TIMEOUT = 5.0  # seconds to wait for serve_forever to stop
+    _SHUTDOWN_TIMEOUT = 5.0
 
     def __init__(self, token: str, host: str = "0.0.0.0", port: int = 0):
         self.allocator = SequenceAllocator()
