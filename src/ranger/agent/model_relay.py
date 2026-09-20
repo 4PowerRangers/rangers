@@ -59,8 +59,8 @@ def create_model_relay_app(*, upstream: str, provider: str, model: str,
         body = request.get_json(silent=True)
         if not isinstance(body, dict) or any(key in body for key in ("upstream", "url", "endpoint")):
             return jsonify({"error": "invalid or destination-overriding request"}), 400
-        requested_provider = request.headers.get("X-Tempera-Provider", provider)
-        requested_model = body.get("model", request.headers.get("X-Tempera-Model", model))
+        requested_provider = request.headers.get("X-Rager-Provider", provider)
+        requested_model = body.get("model", request.headers.get("X-Rager-Model", model))
         if requested_provider != provider or requested_model != model:
             return jsonify({"error": "provider/model is not approved"}), 403
         if provider == "ollama":

@@ -168,7 +168,6 @@ class RunStore:
                 stream.flush()
                 os.fsync(stream.fileno())
         except OSError as exc:
-            # Trace is optional; it must not invalidate an otherwise complete run.
             import warnings
             warnings.warn(f"optional trace persistence failed: {exc}")
 

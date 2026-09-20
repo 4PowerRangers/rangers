@@ -25,8 +25,6 @@ def executable() -> str:
                 if candidate.is_file():
                     return str(candidate)
             except OSError:
-                # Keep the path so the caller can report the actual access
-                # failure from subprocess rather than masking it here.
                 return str(candidate)
     return "docker"
 

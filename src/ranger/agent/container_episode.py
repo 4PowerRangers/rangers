@@ -191,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
         outcome = {**outcome, "usage": get_model_usage_summary(), **command_metadata}
         outcome_path.write_text(json.dumps(outcome, ensure_ascii=False, default=str), encoding="utf-8")
         return 0
-    except Exception as exc:  # noqa: BLE001 - always report, never crash silently
+    except Exception as exc:
         error_path.write_text(traceback.format_exc(), encoding="utf-8")
         try:
             outcome_path.write_text(json.dumps({

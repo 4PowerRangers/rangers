@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 
 import argparse
 from dataclasses import replace
@@ -47,9 +46,6 @@ def provider_seed_supported(provider: str | None) -> bool:
 
 MODEL_USAGE_LOG: list[dict[str, Any]] = []
 MIN_SAFE_CALL_BUDGET = 160
-# The relay itself allows up to 180 seconds for a slow upstream model call.
-# Keep the client read timeout at least as long, otherwise the runner can
-# abort while the relay is still processing a valid request.
 MODEL_RELAY_CONNECT_TIMEOUT = 5
 MODEL_RELAY_READ_TIMEOUT = float(os.environ.get("RANGER_MODEL_RELAY_READ_TIMEOUT", "180"))
 
@@ -129,7 +125,7 @@ def load_mission(scenario_path: Path | str, gateway: str = PROXY,
         else yaml.safe_load(Path(scenario_path).read_text(encoding="utf-8"))
     )
     instructions = f"\n{agent_instructions}" if agent_instructions else ""
-    if "agent" in document:  # Deprecated combined PoC file compatibility.
+    if "agent" in document:
         prompt = document["agent"]["prompt"]
         target = document.get("meta", {}).get("target", gateway)
         return prompt.replace("{target}", target) + instructions + OUTPUT_CONTRACT
@@ -166,16 +162,6 @@ def call_llm(messages: list[dict[str, str]], *,
              max_tokens: int | None = None, endpoint: str | None = None) -> str:
     provider = provider or PROVIDER
     model = model or MODEL_NAME
-    # Read RANGER_MODEL_ENDPOINT from the environment at call time, not the
-    # frozen MODEL_ENDPOINT module constant captured at import time. This
-    # matters for container mode: `python3 -m ranger.agent.container_episode`
-    # first imports the `ranger.agent` package, whose __init__.py eagerly
-    # imports this module (freezing MODEL_ENDPOINT from whatever the
-    # environment was at THAT moment) before container_episode.main() gets a
-    # chance to set RANGER_MODEL_ENDPOINT from container_input.json. Without
-    # this fix, the attacker container would silently fall through to the
-    # direct-provider branch below and require DEEPSEEK_API_KEY, which
-    # container mode must never provide to the attacker.
     endpoint = (
         os.environ.get("RANGER_MODEL_ENDPOINT", MODEL_ENDPOINT)
         if endpoint is None else endpoint
@@ -185,7 +171,7 @@ def call_llm(messages: list[dict[str, str]], *,
         try:
             response = requests.post(
                 f"{endpoint.rstrip('/')}/v1/chat/completions",
-                headers={"X-Tempera-Provider": provider, "X-Tempera-Model": model},
+                headers={"X-Rager-Provider": provider, "X-Rager-Model": model},
                 json={
                     "model": model, "messages": messages, "stream": False,
                     **({"max_tokens": max_tokens} if max_tokens is not None else {}),
@@ -205,15 +191,6 @@ def call_llm(messages: list[dict[str, str]], *,
             raise ModelUpstreamConnectionError("approved model upstream is unavailable")
         response.raise_for_status()
         data = response.json()
-        # The relay forwards the upstream provider's response body verbatim
-        # (see model_relay.py's chat() -> jsonify(result)), so a DeepSeek
-        # call through the relay still carries the same top-level "usage"
-        # object a direct DeepSeek call would. Recording it here keeps
-        # usage.model_calls/total_tokens meaningful in container mode
-        # exactly like the direct "deepseek" branch below does; without
-        # this, every relay-routed call (all of container mode) would
-        # silently report zero model calls and zero tokens even though the
-        # agent really executed a full episode against a real LLM.
         try:
             usage = data.get("usage") if isinstance(data, dict) else None
             MODEL_USAGE_LOG.append({
@@ -352,11 +329,9 @@ def _request_target(action: Mapping[str, Any], gateway: str) -> tuple[str, dict[
     try:
         parsed = urlsplit(raw_path)
         if parsed.scheme or parsed.netloc:
-            # Absolute agent URLs are treated as resource hints.  The proxy's
-            # configured upstream remains authoritative; only path/query pass through.
             if parsed.scheme not in {"http", "https"} or not parsed.netloc:
                 raise ValueError("absolute URL must use http(s) and include a host")
-            parsed.port  # Validate a declared port before discarding the host.
+            parsed.port
             path = parsed.path or "/"
             if parsed.query:
                 path += f"?{parsed.query}"
@@ -391,11 +366,9 @@ def _do_http_legacy(action: dict[str, Any], gateway: str | None = None) -> str:
     time.monotonic()
     semantic_auth = _authentication_summary(response.text)
     if semantic_auth:
-        # The agent needs authentication.token to reuse the JWT. Invocation
-        # records still redact request secrets independently.
         safe_body = response.text
         response._content = (semantic_auth + "\n" + safe_body).encode("utf-8")
-    observer_feedback = response.headers.get("X-Tempera-Observer-Feedback", "")
+    observer_feedback = response.headers.get("X-Rager-Observer-Feedback", "")
     if isinstance(observer_feedback, str) and observer_feedback:
         response._content = (f"observer_feedback={observer_feedback}\n" + response.text).encode("utf-8")
     if 300 <= response.status_code < 400 and "Location" in response.headers:
@@ -461,9 +434,6 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
     adapter = adapter or InternalLLMAgentAdapter(
         mission=mission, provider=provider, model=model,
         temperature=temperature, seed=seed if seed_supported else None,
-        # The run budget controls cumulative completion usage. It must not be
-        # reused as a tiny per-call output cap: doing so truncated valid JSON
-        # actions at 160 tokens and produced action_parse_failed.
         max_tokens=max_tokens,
         call=llm_call, parse=parse_action, available_tools=available_tools,
         tool_schemas=model_tool_schemas(command_registry),
@@ -496,11 +466,6 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
         prepare_error = ("adapter_error", f"{type(exc).__name__}: {exc}")
     gate_policy = policy
     if policy is not None and policy_target:
-        # HTTP transport identity is known before execution, but H3-style
-        # logical target authorization is observer/contextual evidence.  Keep
-        # the source policy untouched for post-run ROE; the validation
-        # transport gate must not interpret the provisional HTTP fallback as
-        # a logical target before an observed event exists.
         gate_policy = replace(
             policy,
             roe={key: value for key, value in policy.roe.items()
@@ -697,10 +662,6 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
                 forwarding_error = exc
         normalization_input = dict(action)
         if action.get("action") == "http_request":
-            # The gateway is a transport endpoint and may be a run-local
-            # loopback/DNS address.  Policy semantics must be evaluated
-            # against the stable target identity instead; the actual request
-            # below still uses ``gateway`` unchanged.
             policy_base = policy_target or gateway
             normalization_input = prepare_http_action(normalization_input, policy_base)
             if policy_target:
@@ -961,10 +922,10 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
         request_action = dict(action)
         request_action["headers"] = {
             **(action.get("headers") or {}),
-            "X-Tempera-Action-Id": action_id,
-            "X-Tempera-Step": str(step),
-            "X-Tempera-Request-Id": request_id,
-            **({"X-Tempera-Correlation-Token": correlation_token} if correlation_token else {}),
+            "X-Rager-Action-Id": action_id,
+            "X-Rager-Step": str(step),
+            "X-Rager-Request-Id": request_id,
+            **({"X-Rager-Correlation-Token": correlation_token} if correlation_token else {}),
         }
         if gate is not None:
             gate_records[-1]["execution_attempted"] = True
@@ -974,7 +935,6 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
         try:
             observation = do_http(request_action, gateway)
         except MalformedActionError as exc:
-            # Keep this branch for callers that mutate the request after planning.
             detail = str(exc)
             record.update({
                 "error": "action_parse_failed", "detail": detail,
