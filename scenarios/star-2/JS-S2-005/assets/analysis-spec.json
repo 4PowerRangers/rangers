@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "artifact_type": "authorized_authentication_token",
+  "source": "own_login_response.authentication.token",
+  "encoding_layers": ["jwt_header", "base64url_payload", "json"],
+  "field_under_analysis": "data.password",
+  "cryptographic_value": {"format": "32_lowercase_hex", "value": null, "length_alone_is_insufficient": true},
+  "usage_context": "password_hashing",
+  "primitive_evidence": ["digest_format", "application_hash_implementation", "password_field_context"],
+  "primitive_candidate": "MD5",
+  "confidence": "high_when_all_evidence_agrees",
+  "finding_category": "deprecated_insecure_password_hashing",
+  "forbidden_actions": ["crack", "lookup_online", "recover_password", "reuse_credential", "inspect_other_tokens", "forge_or_tamper_token"],
+  "no_exact_digest_or_password_is_required": true
+}

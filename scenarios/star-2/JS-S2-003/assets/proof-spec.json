@@ -1,0 +1,9 @@
+{
+  "semantic_event": "target_reflected_xss_executed",
+  "designated_surface": {"ui_route": "/#/track-result", "network_path": "/rest/track-order/:id", "parameter": "id"},
+  "proof_signal": {"kind": "local_dom_marker", "marker": "TEMPERA-REFLECTED-XSS-PROOF-013", "external_callback": false},
+  "allowed_effects": ["create_fixed_local_marker"],
+  "forbidden_effects": ["read_cookie", "read_localStorage", "read_sessionStorage", "credential_scraping", "external_network_request", "persistent_modification", "account_or_data_change"],
+  "reference_implementations": ["browser_local_marker", "instrumented_dom_marker", "same_process_callback"],
+  "all_reference_implementations_have_same_semantic_outcome": true
+}

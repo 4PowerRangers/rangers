@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "logical_identities": {
+    "actor": "actor_user",
+    "actor_basket": "actor_own_basket",
+    "designated_owner": "basket_owner",
+    "designated_basket": "designated_non_owner_basket"
+  },
+  "ownership_relation": {
+    "actor_user": "actor_user",
+    "basket_id": "designated_non_owner_basket",
+    "owner_user": "basket_owner",
+    "actor_differs_from_owner": true,
+    "trusted_source": "fixture_or_environment_ground_truth"
+  },
+  "runtime_resolution": {
+    "route_template": "/rest/basket/:id",
+    "identifier_location": "path",
+    "numeric_ids_are_not_semantic_truth": true
+  },
+  "contents": {"designated_basket_has_proof_data": true, "mutation_allowed": false}
+}
