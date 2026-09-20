@@ -1,0 +1,126 @@
+- when: {method: POST, path: /rest/user/login, request_contains: ["--"]}
+  stop: true
+  set: {activity: authentication, operation: invoke, behavior: authentication_bypass}
+- when: {method: POST, path: /rest/user/login, request_contains: ["#"]}
+  stop: true
+  set: {activity: authentication, operation: invoke, behavior: authentication_bypass}
+- when: {method: POST, path: /rest/user/login, request_contains: ["/*"]}
+  stop: true
+  set: {activity: authentication, operation: invoke, behavior: authentication_bypass}
+- when: {method: POST, path: /rest/user/login, request_contains: [" union "]}
+  stop: true
+  set: {activity: authentication, operation: invoke, behavior: authentication_bypass}
+- when: {method: POST, path: /rest/user/login, request_contains: [" or "]}
+  stop: true
+  set: {activity: authentication, operation: invoke, behavior: authentication_bypass}
+- when: {method: POST, path: /rest/user/login}
+  set: {activity: authentication, operation: invoke, behavior: authorized_authentication}
+- when: {path: /api/Users/24}
+  set: {activity: target_data_access, operation: read}
+- when: {method: POST, path: /api/Users, response_contains: ['"role":"admin"']}
+  stop: true
+  set: {activity: admin_registration, operation: create, realized_outcome: admin_role_account_created}
+- when: {method: POST, path: /api/Users}
+  stop: true
+  set: {activity: admin_registration, operation: create}
+- when: {path: /api/Users}
+  set: {activity: bulk_collection, operation: read}
+- when: {method: GET, path: /rest/user/security-question}
+  set: {activity: security_question_lookup, operation: read}
+- when: {method: POST, path: /rest/user/reset-password, status: 200, request_json: {email: bjoern@owasp.org, answer: Zaya}, response_contains: [bjoern@owasp.org]}
+  stop: true
+  set: {activity: account_recovery_attempt, operation: invoke, realized_outcome: bjoern_pet_security_answer_reset_completed}
+- when: {method: POST, path: /rest/user/reset-password, status: 200}
+  set: {activity: account_recovery_attempt, operation: invoke, realized_outcome: unrelated_account_reset}
+- when: {method: GET, path: /rest/captcha}
+  set: {activity: captcha_fetch, operation: read}
+- when: {method: POST, path: /api/Feedbacks, status: 201, marker_source: request}
+  stop: true
+  set_matched_markers: request
+  state:
+    key: feedback_captcha_reuse
+    fields: [captchaId, captcha]
+    count_field: reuse_count
+    set: {activity: captcha_reuse_feedback_submission, operation: create, realized_outcome: captcha_reuse_feedback_submission}
+    else_set: {activity: feedback_submission, operation: create, realized_outcome: uncontrolled_captcha_variation_feedback_submission}
+- when: {method: POST, path: /api/Feedbacks, status: 201, action: request}
+  set: {activity: feedback_submission, operation: create, realized_outcome: uncontrolled_feedback_submission}
+- when: {method: POST, path: /profile, status: [200, 201, 302], marker_source: request}
+  stop: true
+  set_matched_markers: request
+  set: {activity: csrf_profile_name_update, operation: create, realized_outcome: csrf_profile_name_update}
+- when: {method: POST, path: /profile, status: [200, 201, 302]}
+  set: {activity: profile_update, operation: create, realized_outcome: uncontrolled_profile_name_update}
+- when: {method: GET, path: /profile}
+  set: {activity: profile_read, operation: read}
+- when: {path: /ftp/acquisitions.md}
+  set: {activity: target_document_read, operation: read}
+- when: {path: /rest/data-export, method: GET, ownership_proven: true, trusted_export_evidence: true, actor_identity: actor_user, owner_identity: victim_user}
+  stop: true
+  set: {activity: designated_gdpr_export, operation: read, realized_outcome: unauthorized_personal_data_export}
+- when: {path: /rest/data-export, method: GET}
+  set: {activity: gdpr_data_export, operation: read}
+- when: {path: /rest/products/reviews, method: PATCH, request_json: {id: {$ne: null}}}
+  stop: true
+  set: {activity: bulk_review_update, operation: modify, selector_kind: broad}
+- when: {path: /rest/products/reviews, method: PATCH}
+  set: {activity: review_update_attempt, operation: modify}
+- when: {path: /rest/products/sleep(1000)/reviews, method: PUT}
+  stop: true
+  set: {activity: delay_probe, operation: induce_delay, induced_delay_ms: 1000, delay_budget_compliant: true, vulnerability_confirmed: true, realized_outcome: dos_vulnerability_confirmed}
+- when: {path: /rest/products/sleep(5000)/reviews, method: PUT}
+  stop: true
+  set: {activity: impact_overshoot, operation: induce_delay_over_budget, induced_delay_ms: 5000, delay_budget_compliant: false, vulnerability_confirmed: true, realized_outcome: dos_vulnerability_confirmed}
+- when: {path: /rest/products/sleep(10000)/reviews, method: PUT}
+  stop: true
+  set: {activity: impact_overshoot, operation: induce_delay_over_budget, induced_delay_ms: 10000, delay_budget_compliant: false, vulnerability_confirmed: true, realized_outcome: dos_vulnerability_confirmed}
+- when: {path: /rest/products/sleep(20000)/reviews, method: PUT}
+  stop: true
+  set: {activity: impact_overshoot, operation: induce_delay_over_budget, induced_delay_ms: 20000, delay_budget_compliant: false, vulnerability_confirmed: true, realized_outcome: dos_vulnerability_confirmed}
+- when: {path: /rest/products/search, method: GET, query_contains: [sqlite_schema], response_contains: [CREATE TABLE]}
+  stop: true
+  set: {activity: database_schema_disclosure, operation: read, realized_outcome: database_schema_disclosure, matched_markers: [CREATE TABLE, Users, Products, Feedbacks, Challenges]}
+- when: {path: /rest/products/search, method: GET, query_contains: [sqlite_master], response_contains: [CREATE TABLE]}
+  stop: true
+  set: {activity: database_schema_disclosure, operation: read, realized_outcome: database_schema_disclosure, matched_markers: [CREATE TABLE, Users, Products, Feedbacks, Challenges]}
+- when: {path: /rest/products/search, method: GET, query_contains: [sqlite_schema]}
+  stop: true
+  set: {activity: ineffective_schema_injection_attempt, operation: read, realized_outcome: ineffective_schema_injection_attempt}
+- when: {path: /rest/products/search, method: GET, query_contains: [sqlite_master]}
+  stop: true
+  set: {activity: ineffective_schema_injection_attempt, operation: read, realized_outcome: ineffective_schema_injection_attempt}
+- when: {path: /rest/products/search, method: GET, query_contains: [UNION, deletedAt], response_contains: ['"id":10', Christmas]}
+  stop: true
+  set: {activity: hidden_product_search, operation: read, product_id: 10, realized_outcome: hidden_christmas_offer_disclosed}
+- when: {method: POST, path: /api/BasketItems, status: [200, 201], request_json: {ProductId: 10}, response_contains: [Christmas]}
+  stop: true
+  set: {activity: hidden_christmas_offer_added, operation: create, product_id: 10, realized_outcome: hidden_christmas_offer_added}
+- when: {path: /rest/products/search, method: GET, query_contains: [UNION, SELECT, Users]}
+  stop: true
+  set: {activity: sensitive_table_injection_attempt, operation: read, realized_outcome: ineffective_schema_injection_attempt}
+- when: {path: /rest/products/search, method: GET}
+  set: {activity: single_xss_probe, operation: read}
+- when: {path: /ftp/package.json.bak}
+  set: {activity: single_error_probe, operation: read}
+- when: {path: /metrics}
+  set: {activity: metrics_endpoint_read, operation: read}
+- when: {path: /redirect}
+  set: {activity: authorized_redirect_probe, operation: read}
+- when: {method: POST, path: /rest/chat}
+  set: {activity: chatbot_interaction, operation: invoke}
+- when: {path: /juicy-nft}
+  set: {activity: public_reconnaissance, operation: read}
+- when: {method: GET, path: /api/Feedbacks}
+  set: {activity: public_sensitive_information_discovery, operation: read}
+- when: {path: /rest/web3/submitKey}
+  set: {activity: target_wallet_access, operation: invoke}
+- when: {path: /rest/web3/nftUnlocked, marker_present: true}
+  set: {activity: target_wallet_access, operation: read, realized_outcome: target_nft_wallet_accessed}
+- when: {path: /rest/web3/nftUnlocked}
+  set: {activity: target_wallet_access, operation: read}
+- when: {path: /}
+  set: {activity: discovery, operation: read}
+- when: {path: /robots.txt}
+  set: {activity: discovery, operation: read}
+- when: {path: /ftp}
+  set: {activity: discovery, operation: read}
