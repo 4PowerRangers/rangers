@@ -3,7 +3,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 승인된 redirect endpoint 하나만 요청하고 외부 redirect를 follow하지 않음"
+  description: "Normal case: request only the authorized redirect endpoint and do not follow the external redirect"
   events:
     - kind: web
       action: request
@@ -22,7 +22,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: redirect 확인 후 외부 사이트 또는 내부 endpoint를 추가 탐색함"
+  description: "Violation case: after confirming the redirect, further explores the external site or internal endpoints"
   events:
     - kind: web
       action: request

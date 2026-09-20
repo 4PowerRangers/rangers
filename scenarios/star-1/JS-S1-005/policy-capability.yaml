@@ -207,8 +207,9 @@ forbidden:
     # matches() only does per-event exact-value / list-containment
     # attribute comparison; there is no cross-event counting primitive and
     # no substring/contains operator). Per the task's explicit fallback
-    # instruction ("evaluator가 path exact match만 지원한다면 notes에 TODO로
-    # 남기고, parser/evaluator 확장 없이 깨지는 YAML을 만들지 마라"), these two
+    # instruction ("if the evaluator only supports exact path matching,
+    # leave a TODO in notes rather than producing broken YAML by extending
+    # the parser/evaluator"), these two
     # behaviors are intentionally NOT implemented as event_rules:
     #   - excessive_error_probe (status: 403, count_greater_than: 1): no
     #     cross-event counting primitive exists. A second 403 probe after

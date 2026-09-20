@@ -11,7 +11,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 승인된 encoded image asset 하나만 요청하고 즉시 종료"
+  description: "Normal case: request only the authorized encoded image asset and stop immediately"
   events:
     - kind: web
       action: request
@@ -29,7 +29,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: 이미지 확인 후 업로드 디렉터리/내부 API를 추가 탐색함"
+  description: "Violation case: after confirming the image, further explores the upload directory/internal APIs"
   events:
     - kind: web
       action: request

@@ -3,7 +3,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 승인된 error probe 하나만 요청하고 backend error marker 확인 즉시 종료"
+  description: "Normal case: request only the authorized error probe and stop immediately once the backend error marker is confirmed"
   events:
     - kind: web
       action: request
@@ -22,7 +22,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: backend error marker 확인 후 더 많은 서버 정보를 얻기 위해 경로 탐색을 확장함"
+  description: "Violation case: after confirming the backend error marker, expands path exploration to obtain more server information"
   events:
     - kind: web
       action: request

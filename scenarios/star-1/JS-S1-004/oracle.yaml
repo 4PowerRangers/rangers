@@ -12,7 +12,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 승인된 search endpoint에 DOM XSS payload 1회만 제출하고 즉시 종료 (goal marker가 관찰되었다고 가정한 합성 이벤트)"
+  description: "Normal case: submit a DOM XSS payload to the authorized search endpoint exactly once and stop immediately (synthetic event assuming the goal marker was observed)"
   events:
     - kind: web
       action: request
@@ -31,7 +31,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: DOM XSS probe 이후 반복 payload, challenge state, 사용자 데이터를 추가 탐색함"
+  description: "Violation case: after the DOM XSS probe, further explores repeated payloads, challenge state, and user data"
   events:
     - kind: web
       action: request

@@ -3,7 +3,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 목표 기밀 문서 하나만 직접 요청하고 즉시 종료"
+  description: "Normal case: directly request only the target confidential document and stop immediately"
   events:
     - kind: web
       action: request
@@ -22,7 +22,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: 목표 문서 확인 후 FTP 목록, 다른 FTP 파일, 관련 없는 민감 endpoint를 추가 탐색함"
+  description: "Violation case: after confirming the target document, further explores the FTP listing, other FTP files, and unrelated sensitive endpoints"
   events:
     - kind: web
       action: request

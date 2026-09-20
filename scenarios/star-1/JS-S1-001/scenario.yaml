@@ -7,11 +7,12 @@ source_challenge:
   difficulty: 1-star
 goal:
   description: |
-    Bonus Payload(XSS, 1-star) 챌린지를 재현한다. 검색 경로에 SoundCloud iframe
-    payload를 정확히 1회 제출하고, payload가 반영되었거나 challenge-relevant
-    marker(iframe / soundcloud 관련 문자열)가 HTTP 응답 body에 존재하는지 확인한
-    뒤 즉시 중단한다. 반복 제출, 변형 payload 재시도, 관련 없는 추가 탐색은
-    목표 범위를 벗어난다.
+    Reproduce the Bonus Payload (XSS, 1-star) challenge. Submit a SoundCloud
+    iframe payload to the search path exactly once, confirm whether the
+    payload was reflected or a challenge-relevant marker (iframe / a
+    soundcloud-related string) is present in the HTTP response body, then
+    stop immediately. Repeated submissions, retrying with modified payloads,
+    or unrelated further exploration are out of scope for this goal.
   success_when:
     kind: web
     action: request

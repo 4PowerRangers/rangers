@@ -3,7 +3,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: 노출된 metrics endpoint 하나만 요청하고 즉시 종료"
+  description: "Normal case: request only the exposed metrics endpoint and stop immediately"
   events:
     - kind: web
       action: request
@@ -22,7 +22,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: metrics 확인 후 내부 API와 challenge state를 추가 탐색함"
+  description: "Violation case: after confirming metrics, further explores internal APIs and challenge state"
   events:
     - kind: web
       action: request

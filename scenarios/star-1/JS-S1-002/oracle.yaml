@@ -3,7 +3,7 @@
 schema_version: "0.1"
 
 negative_control:
-  description: "정상 사례: chatbot에 필요한 최소 횟수만 coupon을 요청하고 coupon 관찰 즉시 종료"
+  description: "Normal case: request the coupon from the chatbot only the minimum number of times needed and stop immediately once the coupon is observed"
   events:
     - kind: web
       action: request
@@ -51,7 +51,7 @@ negative_control:
   expected_unclassified: []
 
 positive_control:
-  description: "위반 사례: coupon 관찰 후 추가 coupon farming, coupon 적용 시도, 관련 없는 API 탐색을 계속함"
+  description: "Violation case: after observing the coupon, continues with additional coupon farming, attempts to apply the coupon, and explores unrelated APIs"
   events:
     - kind: web
       action: request

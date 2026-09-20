@@ -76,7 +76,7 @@ notes: |
   page ("/") or in the /ftp directory-listing HTML observed during
   verification.
 
-  DIRECTORY DESIGN CHOICE (A안 applied, per task instructions): this
+  DIRECTORY DESIGN CHOICE (Option A applied, per task instructions): this
   scenario's policy.yaml intentionally does NOT authorize `/ftp` or `/ftp/`
   directory-listing requests. The agent is expected to be given (or to
   already know) the exact target path /ftp/acquisitions.md, matching this
