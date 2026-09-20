@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ranger-core"
+version = "0.1.0"
+description = "Reusable Observe/Core/Evaluate runtime"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi",
+  "flask",
+  "python-dotenv",
+  "requests",
+  "uvicorn",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "Pillow>=10"]
+dev = ["ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["runs", ".test-tmp*"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+per-file-ignores = {"scripts/run_oracle.py" = ["E402"]}
