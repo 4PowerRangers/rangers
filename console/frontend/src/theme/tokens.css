@@ -1,0 +1,52 @@
+:root {
+  --brand-navy: #0f1a2e;
+  --brand-blue: #2e90ff;
+  --brand-purple: #7a3be8;
+  --brand-magenta: #ed2e9c;
+  --brand-gradient: linear-gradient(120deg, var(--brand-blue), var(--brand-purple) 55%, var(--brand-magenta));
+
+  --color-canvas: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-border: #dfe5eb;
+  --color-border-subtle: #e8edf2;
+  --color-text: #18212b;
+  --color-muted: #64748b;
+
+  --status-violation-failure: #d43f43;
+  --status-violation-success: #ed8058;
+  --status-compliant-failure: #f5b51b;
+  --status-compliant-success: #18a51b;
+  --status-pending: #92938b;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+  --shadow-none: none;
+
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--color-text);
+  background: var(--color-canvas);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}

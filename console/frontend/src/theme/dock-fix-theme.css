@@ -1,0 +1,544 @@
+
+.lab-fields-v2{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) auto;
+  grid-template-areas:"basis level" "policy goal";
+  align-content:space-between;
+  column-gap:24px;
+  row-gap:12px;
+}
+.lab-fields-v2>.pressure-basis-field{grid-area:basis;width:100%;min-width:0}
+.lab-fields-v2>.pressure-level-field{grid-area:level;width:100%;min-width:0}
+.lab-fields-v2>.advanced-check{align-self:center;min-width:0;width:100%;height:auto;min-height:30px;line-height:1.25;white-space:nowrap}
+.lab-fields-v2>.advanced-check:nth-last-child(2){grid-area:policy;grid-column:auto!important}
+.lab-fields-v2>.advanced-check:last-child{grid-area:goal;grid-column:auto!important}
+.pressure-basis-chips{width:100%;min-height:38px;align-content:center}
+.pressure-empty{display:block;width:100%;padding:9px 0;line-height:1.35}
+.pressure-level-field input[type=range]{height:20px}
+.pressure-level-field input[type=range]:disabled{cursor:not-allowed;opacity:.45}
+.pressure-level-field output{min-width:72px;text-align:center}
+.lab-fields-v3{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) auto;
+  align-content:space-between;
+  column-gap:24px;
+  row-gap:12px;
+}
+.lab-fields-v3>.lab-coming-soon{grid-column:1/-1;width:100%;align-self:center;text-align:center}
+.lab-fields-v3>.advanced-check{align-self:center;width:100%;min-height:30px;height:auto;line-height:1.25;white-space:nowrap}
+.advanced-lab-nav{min-height:28px;line-height:1}
+.advanced-lab-nav button{flex:0 0 28px}
+.command-tools-menu{z-index:1000}
+.pressure-level-field input[type=range]{
+  appearance:none;
+  -webkit-appearance:none;
+  height:20px;
+  background:transparent;
+}
+.pressure-level-field input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:999px;background:#d8c8ef}
+.pressure-level-field input[type=range]::-webkit-slider-thumb{
+  width:14px;
+  height:14px;
+  margin-top:-5px;
+  -webkit-appearance:none;
+  appearance:none;
+  border:2px solid #8d62c5;
+  border-radius:50%;
+  background:#fff;
+}
+.pressure-level-field input[type=range]::-moz-range-track{height:4px;border-radius:999px;background:#d8c8ef}
+.pressure-level-field input[type=range]::-moz-range-thumb{width:10px;height:10px;border:2px solid #8d62c5;border-radius:50%;background:#fff}
+.pressure-level-field input[type=range]:disabled::-webkit-slider-thumb{border-color:#a9a0b5;background:#e6e1eb}
+.pressure-level-field input[type=range]:disabled::-moz-range-thumb{border-color:#a9a0b5;background:#e6e1eb}
+@media(max-width:850px){
+  .advanced-lab{height:380px;min-height:380px;max-height:380px}
+  .advanced-lab-viewport{height:auto}
+  .lab-fields-v1,.lab-fields-v2,.lab-fields-v3{height:100%;grid-template-areas:none}
+  .lab-fields-v2{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;align-content:space-between}
+  .lab-fields-v2>.pressure-basis-field,.lab-fields-v2>.pressure-level-field,.lab-fields-v2>.advanced-check{grid-area:auto!important;grid-column:1!important}
+  .lab-fields-v3{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto auto;align-content:space-between}
+  .lab-fields-v3>.lab-coming-soon{grid-column:1}
+  .lab-fields-v1>.advanced-check,.lab-fields-v2>.advanced-check,.lab-fields-v3>.advanced-check{white-space:normal}
+}
+
+/* v1 only: keep Command tools and all numeric controls on one shared baseline. */
+.advanced-lab-v1 .lab-fields-v1{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  grid-template-rows:auto auto;
+  align-items:start;
+  align-content:space-between;
+  gap:10px 12px;
+  height:100%;
+  min-height:0;
+}
+.advanced-lab-v1 .lab-fields-v1>label:not(.advanced-check),
+.advanced-lab-v1 .lab-fields-v1>.command-tools-field{
+  grid-row:1!important;
+  align-self:start!important;
+  display:grid!important;
+  align-content:start!important;
+  align-items:start!important;
+  gap:7px!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:13px!important;
+  transform:none!important;
+}
+.advanced-lab-v1 .lab-fields-v1>label:not(.advanced-check)>input,
+.advanced-lab-v1 .lab-fields-v1>label:not(.advanced-check)>select,
+.advanced-lab-v1 .lab-fields-v1>.command-tools-field .command-tools-trigger{
+  width:100%;
+  height:38px!important;
+  min-height:38px!important;
+  margin:0!important;
+  align-self:start!important;
+  line-height:normal!important;
+}
+.advanced-lab-v1 .lab-fields-v1>.command-tools-field .command-tools-label{
+  height:13px;
+  line-height:13px!important;
+  margin:0;
+  padding:0;
+}
+.advanced-lab-v1 .lab-fields-v1>.advanced-check{
+  grid-row:2!important;
+  align-self:center!important;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
+  transform:none!important;
+}
+@media(max-width:850px){
+  .advanced-lab-v1 .lab-fields-v1{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:auto auto auto auto auto;
+    align-content:space-between;
+  }
+  .advanced-lab-v1 .lab-fields-v1>label:not(.advanced-check),
+  .advanced-lab-v1 .lab-fields-v1>.command-tools-field{
+    grid-row:auto!important;
+    grid-column:auto!important;
+  }
+  .advanced-lab-v1 .lab-fields-v1>.advanced-check{
+    grid-column:1/-1!important;
+    grid-row:auto!important;
+  }
+}
+
+/* v1 compact spacing: preserve the aligned controls, remove only unused height. */
+.advanced-lab-v1{
+  height:198px;
+  min-height:198px;
+  max-height:198px;
+  gap:6px;
+  padding:10px 14px;
+}
+.advanced-lab-v1 .advanced-lab-viewport{min-height:0}
+.advanced-lab-v1 .advanced-lab-panel{height:auto;min-height:0}
+.advanced-lab-v1 .lab-fields-v1{
+  height:auto;
+  min-height:0;
+  align-content:start;
+  grid-template-rows:auto auto;
+  row-gap:10px;
+}
+.advanced-lab-v1 .lab-fields-v1>.advanced-check{
+  align-self:start!important;
+}
+.advanced-lab-v1 .advanced-lab-nav{margin-top:0}
+@media(max-width:850px){
+  .advanced-lab-v1{
+    height:380px;
+    min-height:380px;
+    max-height:380px;
+    padding:10px;
+  }
+}
+
+/* v2 only: use the compact v1 shell and keep pressure controls above one
+   shared checkbox row without changing v1 or v3. */
+.advanced-lab-v2{
+  height:198px;
+  min-height:198px;
+  max-height:198px;
+  gap:6px;
+  padding:10px 14px;
+}
+.advanced-lab-v2 .advanced-lab-viewport{min-height:0}
+.advanced-lab-v2 .advanced-lab-panel{height:auto;min-height:0}
+.advanced-lab-v2 .lab-fields-v2{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  grid-template-rows:auto auto;
+  grid-template-areas:"basis basis basis level level level level" "policy policy policy goal goal goal goal";
+  align-content:start;
+  align-items:start;
+  column-gap:12px;
+  row-gap:10px;
+  height:auto;
+  min-height:0;
+}
+.advanced-lab-v2 .lab-fields-v2>.pressure-basis-field,
+.advanced-lab-v2 .lab-fields-v2>.pressure-level-field{
+  align-self:start;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:0;
+  line-height:13px;
+}
+.advanced-lab-v2 .lab-fields-v2>.pressure-basis-field{grid-area:basis}
+.advanced-lab-v2 .lab-fields-v2>.pressure-level-field{grid-area:level}
+.advanced-lab-v2 .lab-fields-v2>.advanced-check{
+  align-self:start!important;
+  width:100%;
+  min-width:0;
+  min-height:30px;
+  height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
+  white-space:nowrap;
+}
+.advanced-lab-v2 .lab-fields-v2>.advanced-check:nth-last-child(2){grid-area:policy;grid-column:auto!important}
+.advanced-lab-v2 .lab-fields-v2>.advanced-check:last-child{grid-area:goal;grid-column:auto!important}
+.advanced-lab-v2 .pressure-basis-chips{width:100%;min-height:38px;align-content:center}
+.advanced-lab-v2 .pressure-level-field{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-rows:auto auto auto;
+  gap:4px 8px;
+}
+.advanced-lab-v2 .pressure-level-field>.lab-field-label{grid-column:1/-1;line-height:13px}
+.advanced-lab-v2 .pressure-level-field>.pressure-level-range{grid-column:1/-1;line-height:12px}
+.advanced-lab-v2 .pressure-level-field>input[type=range]{grid-column:1;align-self:center}
+.advanced-lab-v2 .pressure-level-field>output{grid-column:2;align-self:center;justify-self:end;min-width:72px;line-height:18px}
+.advanced-lab-v2 .advanced-lab-nav{margin-top:0}
+@media(max-width:850px){
+  .advanced-lab-v2{
+    height:380px;
+    min-height:380px;
+    max-height:380px;
+    padding:10px;
+  }
+  .advanced-lab-v2 .lab-fields-v2{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto auto auto;
+    grid-template-areas:none;
+    row-gap:10px;
+  }
+  .advanced-lab-v2 .lab-fields-v2>.pressure-basis-field,
+  .advanced-lab-v2 .lab-fields-v2>.pressure-level-field,
+  .advanced-lab-v2 .lab-fields-v2>.advanced-check{grid-area:auto!important;grid-column:1!important}
+  .advanced-lab-v2 .lab-fields-v2>.advanced-check{white-space:normal}
+}
+
+/* Shared v1/v2 checkbox row: v1 is the reference geometry. */
+.advanced-lab-v1 .lab-checkbox,
+.advanced-lab-v2 .lab-checkbox{
+  display:flex!important;
+  align-items:center!important;
+  align-self:start!important;
+  gap:9px!important;
+  width:auto!important;
+  max-width:100%;
+  min-width:0;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  transform:none!important;
+  white-space:nowrap;
+}
+.advanced-lab-v1 .lab-checkbox input,
+.advanced-lab-v2 .lab-checkbox input{
+  flex:0 0 19px;
+  width:19px!important;
+  height:19px!important;
+  min-width:19px!important;
+  min-height:19px!important;
+  margin:0!important;
+  padding:0!important;
+  border-width:1px;
+  border-radius:3px;
+  accent-color:#2563eb;
+  transform:none!important;
+}
+.advanced-lab-v1 .lab-checkbox:nth-last-child(2),
+.advanced-lab-v2 .lab-checkbox:nth-last-child(2){
+  grid-row:2!important;
+  grid-column:1/4!important;
+  justify-self:start!important;
+}
+.advanced-lab-v1 .lab-checkbox:last-child,
+.advanced-lab-v2 .lab-checkbox:last-child{
+  grid-row:2!important;
+  grid-column:4/8!important;
+  justify-self:start!important;
+}
+@media(max-width:850px){
+  .advanced-lab-v1 .lab-checkbox,
+  .advanced-lab-v2 .lab-checkbox{
+    grid-column:1/-1!important;
+    white-space:normal;
+  }
+}
+
+/* v2-only placement: use the exact v1 checkbox columns without changing v1. */
+.advanced-lab-v2 .lab-fields-v2>.lab-checkbox:nth-last-child(2){
+  grid-area:2 / 1 / 3 / 4!important;
+  justify-self:start!important;
+}
+.advanced-lab-v2 .lab-fields-v2>.lab-checkbox:last-child{
+  grid-area:2 / 4 / 3 / 8!important;
+  justify-self:start!important;
+}
+@media(max-width:850px){
+  .advanced-lab-v2 .lab-fields-v2>.lab-checkbox:nth-last-child(2),
+  .advanced-lab-v2 .lab-fields-v2>.lab-checkbox:last-child{
+    grid-area:auto!important;
+    grid-column:1/-1!important;
+  }
+}
+
+/* v1-only placement: move only Expose goal state to the v2 reference column. */
+.advanced-lab-v1 .lab-fields-v1>.lab-checkbox:last-child{
+  grid-area:2 / 4 / 3 / 8!important;
+  justify-self:start!important;
+}
+@media(max-width:850px){
+  .advanced-lab-v1 .lab-fields-v1>.lab-checkbox:last-child{
+    grid-area:auto!important;
+    grid-column:1/-1!important;
+  }
+}
+
+/* Match v2's centered second checkbox start without changing v1's first item. */
+@media(min-width:851px){
+  .advanced-lab-v1 .lab-fields-v1>.lab-checkbox:last-child{
+    grid-area:2 / 1 / 3 / 8!important;
+    margin-left:50%!important;
+    justify-self:start!important;
+  }
+}
+
+/* v3-only compact shell: match the current v1/v2 outer footprint. */
+.advanced-lab-v3{
+  height:198px;
+  min-height:198px;
+  max-height:198px;
+  gap:6px;
+  padding:10px 14px;
+}
+.advanced-lab-v3 .advanced-lab-viewport{min-height:0}
+.advanced-lab-v3 .advanced-lab-panel{height:auto;min-height:0}
+.advanced-lab-v3 .lab-fields-v3{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  grid-template-rows:auto auto;
+  align-content:start;
+  align-items:start;
+  column-gap:12px;
+  row-gap:10px;
+  height:auto;
+  min-height:0;
+}
+.advanced-lab-v3 .lab-fields-v3>.lab-coming-soon{
+  grid-column:1/-1;
+  width:100%;
+  min-width:0;
+  margin:0;
+  align-self:start;
+}
+.advanced-lab-v3 .lab-fields-v3>.advanced-check{
+  align-self:start!important;
+  width:auto!important;
+  min-height:30px;
+  height:30px!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:1.25!important;
+  white-space:nowrap;
+}
+.advanced-lab-v3 .lab-fields-v3>.advanced-check:nth-last-child(2){grid-column:1/4!important}
+.advanced-lab-v3 .lab-fields-v3>.advanced-check:last-child{grid-column:4/8!important}
+@media(max-width:850px){
+  .advanced-lab-v3{
+    height:380px;
+    min-height:380px;
+    max-height:380px;
+    padding:10px;
+  }
+  .advanced-lab-v3 .lab-fields-v3{grid-template-columns:1fr;grid-template-rows:auto auto auto;row-gap:10px}
+  .advanced-lab-v3 .lab-fields-v3>.lab-coming-soon{grid-column:1}
+  .advanced-lab-v3 .lab-fields-v3>.advanced-check{grid-column:1!important;white-space:normal}
+}
+
+/* v3-only checkbox placement: match the v1/v2 checkbox columns. */
+.advanced-lab-v3 .lab-fields-v3>.lab-checkbox:nth-last-child(2){
+  grid-area:2 / 1 / 3 / 4!important;
+  justify-self:start!important;
+}
+.advanced-lab-v3 .lab-fields-v3>.lab-checkbox:last-child{
+  grid-area:2 / 4 / 3 / 8!important;
+  justify-self:start!important;
+}
+@media(max-width:850px){
+  .advanced-lab-v3 .lab-fields-v3>.lab-checkbox:nth-last-child(2),
+  .advanced-lab-v3 .lab-fields-v3>.lab-checkbox:last-child{
+    grid-area:auto!important;
+    grid-column:1!important;
+  }
+}
+
+/* Scenario-driven v2 pressure basis chips. */
+.pressure-basis-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-width:58px;
+  justify-content:center;
+  border-color:#d8dee7;
+  background:#f4f6f8;
+  color:#66717d;
+}
+.pressure-basis-chip::before{
+  width:6px;
+  height:6px;
+  flex:0 0 6px;
+  border-radius:50%;
+  background:#9aa4af;
+  content:"";
+}
+.pressure-basis-chip:hover,
+.pressure-basis-chip.selected{
+  border-color:#7aa7e8;
+  background:#e7f0ff;
+  color:#1e5eff;
+}
+.pressure-basis-chip:hover::before,
+.pressure-basis-chip.selected::before{background:#1e5eff}
+
+/* Integrated run browser: outcome distribution on the left, scenarios on the right. */
+.run-detail-chooser.integrated .run-detail-integrated-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:12px}
+.run-detail-chooser.integrated .run-detail-integrated-body{align-items:start}
+.run-detail-outcome-panel,.run-detail-scenario-panel{min-width:0;padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#fff}
+.run-detail-chooser.integrated .run-detail-outcome-panel,.run-detail-chooser.integrated .pressure-dashboard,.run-detail-chooser.integrated .run-detail-scenario-panel,.run-detail-chooser.integrated .run-detail-pressure-basis-panel{max-height:calc(100dvh - 210px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#b8c4d1 transparent}
+.run-detail-chooser.integrated .run-detail-outcome-panel::-webkit-scrollbar,.run-detail-chooser.integrated .pressure-dashboard::-webkit-scrollbar,.run-detail-chooser.integrated .run-detail-scenario-panel::-webkit-scrollbar,.run-detail-chooser.integrated .run-detail-pressure-basis-panel::-webkit-scrollbar{width:7px}
+.run-detail-chooser.integrated .run-detail-outcome-panel::-webkit-scrollbar-thumb,.run-detail-chooser.integrated .pressure-dashboard::-webkit-scrollbar-thumb,.run-detail-chooser.integrated .run-detail-scenario-panel::-webkit-scrollbar-thumb,.run-detail-chooser.integrated .run-detail-pressure-basis-panel::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:999px;background:#b8c4d1;background-clip:padding-box}
+.outcome-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;color:#25313c;font-size:13px}
+.outcome-panel-heading small{color:#8795a4;font-size:11px;font-weight:600}
+.outcome-panel-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #edf1f5}
+.outcome-panel-tools .outcome-legend{display:flex;flex-wrap:wrap;gap:7px 12px}
+.outcome-panel-tools .outcome-legend span{display:inline-flex;align-items:center;gap:5px;color:#526272;font-size:10px;font-weight:700}
+.outcome-panel-tools .outcome-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;background:#92938b}
+.outcome-panel-tools .outcome-legend .violation-failure i{background:#d43f43}
+.outcome-panel-tools .outcome-legend .violation-success i{background:#ed8058}
+.outcome-panel-tools .outcome-legend .compliant-failure i{background:#f5b51b}
+.outcome-panel-tools .outcome-legend .compliant-success i{background:#18a51b}
+.run-detail-outcome-panel .outcome-chart-module{min-width:0}
+.run-detail-outcome-panel .outcome-chart-module>.outcome-controls{display:none}
+.run-detail-outcome-panel .outcome-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #edf1f5}
+.run-detail-outcome-panel .outcome-chart-total{color:#8795a4;font-size:11px;font-weight:600}
+.run-detail-scenario-panel .run-detail-chooser-body{display:grid;grid-template-columns:1fr;gap:8px;padding:0;max-height:none;overflow:visible}
+.run-detail-scenario-panel .run-detail-chooser-item{min-height:64px}
+.run-detail-chooser.integrated .outcome-scenario-row{grid-template-columns:minmax(110px,1fr) minmax(0,1.5fr) 48px;gap:7px}
+.run-detail-chooser.integrated .outcome-scenario-name{min-width:0}
+.run-detail-chooser.integrated .outcome-scenario-name strong{max-width:100px}
+.run-detail-chooser.integrated .outcome-measure{display:flex;flex:0 0 auto;border:1px solid #d8e1eb;border-radius:6px;overflow:hidden}
+.run-detail-chooser.integrated .outcome-measure button{padding:6px 9px;border:0;border-left:1px solid #d8e1eb;background:#fff;color:#718096;font-size:10px;font-weight:750}
+.run-detail-chooser.integrated .outcome-measure button:first-child{border-left:0}
+.run-detail-chooser.integrated .outcome-measure button.active{background:#17212b;color:#fff}
+.app.dark .run-detail-outcome-panel,.app.dark .run-detail-scenario-panel{border-color:#293647;background:#111b28}
+.app.dark .outcome-panel-heading{color:#dbe5ef}
+.app.dark .outcome-panel-heading small{color:#9db1c6}
+.app.dark .outcome-panel-tools{border-color:#293647}
+.app.dark .outcome-panel-tools .outcome-legend span{color:#b8c6d5}
+.app.dark .run-detail-outcome-panel .outcome-controls{border-color:#293647}
+.app.dark .run-detail-chooser.integrated .outcome-measure{border-color:#34455e}
+.app.dark .run-detail-chooser.integrated .outcome-measure button{border-color:#34455e;background:#111d2e;color:#9cafc5}
+.app.dark .run-detail-chooser.integrated .outcome-measure button.active{background:#315a89;color:#fff}
+@media(max-width:900px){.run-detail-chooser.integrated .run-detail-integrated-body{grid-template-columns:1fr}.run-detail-scenario-panel .run-detail-chooser-body{max-height:none}}
+@media(max-width:560px){.run-detail-outcome-panel,.run-detail-scenario-panel{padding:10px}.outcome-panel-tools{align-items:flex-start;flex-direction:column}.run-detail-chooser.integrated .outcome-scenario-row{grid-template-columns:1fr 52px;gap:5px}.run-detail-chooser.integrated .outcome-scenario-name{grid-column:1/-1}.run-detail-chooser.integrated .outcome-stack{grid-column:1}.run-detail-chooser.integrated .outcome-scenario-total{grid-column:2;grid-row:2}}
+
+.pressure-dashboard{min-width:0;padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#fff}
+.pressure-dashboard .pressure-summary-cards,.pressure-dashboard .pressure-filter-bar{display:none}
+.pressure-basis-detail{display:grid;gap:14px;max-width:1100px;margin:0 auto;padding:8px 0 32px}
+.pressure-detail-header{display:flex;align-items:center;justify-content:space-between;color:#172b45}
+.pressure-detail-header h1{margin:0;font-size:22px}.pressure-detail-header p{margin:5px 0 0;color:#8795a4;font-size:12px}
+.pressure-detail-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pressure-detail-card{padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#fff}
+.pressure-level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pressure-level-card{display:grid;gap:6px;padding:12px;border:1px solid #e2e8f0;border-radius:7px;color:#172b45}.pressure-level-card>b{font-size:20px}.pressure-level-card>small{color:#8795a4;font-size:11px}.pressure-level-bar{height:7px;border-radius:99px;background:#edf2f6;overflow:hidden}.pressure-level-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#bde8f9,#e04952)}
+.pressure-scenario-distribution,.pressure-run-list{display:grid;gap:7px}.pressure-scenario-distribution button,.pressure-run-list button{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:11px 12px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;color:#172b45;text-align:left;cursor:pointer}.pressure-scenario-distribution button:hover,.pressure-run-list button:hover{border-color:#2878f0;background:#f7faff}.pressure-scenario-distribution span,.pressure-run-list small{color:#8795a4;font-size:11px}.pressure-run-list button{grid-template-columns:auto 1fr auto auto}.pressure-run-list b,.pressure-run-list small{display:block}.pressure-run-list strong{font-size:12px}
+.app.dark .pressure-detail-card,.app.dark .pressure-level-card,.app.dark .pressure-scenario-distribution button,.app.dark .pressure-run-list button{border-color:#293647;background:#111b28;color:#e7eef6}.app.dark .pressure-detail-header,.app.dark .pressure-level-card{color:#e7eef6}
+.run-detail-pressure-basis-panel{min-width:0;padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#fff}
+.run-detail-pressure-basis-panel .outcome-panel-heading{margin-bottom:12px}
+.pressure-basis-list{display:grid;gap:8px}
+.pressure-basis-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto 16px;align-items:center;gap:9px;width:100%;min-height:58px;padding:9px 10px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#18212b;text-align:left;cursor:pointer}
+.pressure-basis-row:hover,.pressure-basis-row.selected{border-color:#9dbaf0;background:#f5f8ff}
+.pressure-basis-row>span:nth-child(2){display:grid;gap:3px;min-width:0}
+.pressure-basis-row strong{font-size:13px}
+.pressure-basis-row small{color:#8795a4;font-size:10px}
+.pressure-basis-row>span:last-child{color:#1e5eff;font-size:18px}
+.pressure-basis-levels{display:flex;gap:3px}
+.pressure-basis-levels i{padding:3px 4px;border-radius:4px;background:#eef2f5;color:#a0aab5;font-size:8px;font-style:normal;font-weight:800}
+.pressure-basis-levels i.available{background:#dcecff;color:#1e5eff}
+.pressure-dashboard-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;color:#172b45}
+.pressure-dashboard-heading strong{display:block;font-size:14px}
+.pressure-dashboard-heading small{display:block;margin-top:4px;color:#8795a4;font-size:10px;font-weight:600}
+.pressure-summary-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.pressure-summary-cards .detail-metric{min-width:0;padding:10px;border:1px solid #e5ebf1;border-radius:7px;background:#fbfcfe}
+.pressure-summary-cards .detail-metric small{font-size:9px}
+.pressure-summary-cards .detail-metric strong{font-size:15px}
+.pressure-filter-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;padding:10px;border:1px solid #e5ebf1;border-radius:7px;background:#fbfcfe}
+.pressure-filter-bar label{display:grid;gap:4px;color:#6b7b8c;font-size:9px;font-weight:800;text-transform:uppercase}
+.pressure-filter-bar select,.pressure-filter-bar input{width:100%;min-width:0;height:28px;padding:0 7px;border:1px solid #d8e1eb;border-radius:5px;background:#fff;color:#26384c;font-size:10px}
+.pressure-heatmap-card{min-width:0;padding:10px;border:1px solid #e2e8f0;border-radius:7px;background:#fff}
+.pressure-card-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px;color:#172b45}
+.pressure-card-title strong{font-size:11px}
+.pressure-card-title small{color:#8795a4;font-size:9px;font-weight:600}
+.pressure-heatmap-scroll{width:100%;overflow-x:auto}
+.pressure-heatmap{display:grid;min-width:420px;overflow:hidden;border:1px solid #fff;border-radius:5px;background:#fff}
+.pressure-heatmap-row{display:grid;grid-template-columns:76px repeat(4,minmax(0,1fr));min-height:34px}
+.pressure-heatmap-row>span,.pressure-heatmap-row>strong,.pressure-cell{display:flex;align-items:center;justify-content:center;border-right:1px solid #fff;border-bottom:1px solid #fff}
+.pressure-heatmap-header{background:#eef2fb;color:#243855;font-size:9px;font-weight:800}
+.pressure-heatmap-header span:first-child{justify-content:flex-start;padding-left:7px}
+.pressure-heatmap-row>strong{justify-content:flex-start;padding-left:7px;background:#f6f8fc;color:#243855;font-size:10px}
+.pressure-cell{position:relative;min-width:0;min-height:34px;padding:3px;border:0;border-right:1px solid #fff;border-bottom:1px solid #fff;color:#17324d;font-size:10px;font-weight:800;text-align:center;cursor:pointer}
+.pressure-cell:disabled{cursor:default}
+.pressure-cell:not(:disabled):hover{outline:2px solid #1e5eff;outline-offset:-2px;z-index:1}
+.pressure-cell b{font-size:10px}
+.pressure-cell small{position:absolute;right:3px;bottom:2px;color:#6e7180;font-size:7px;font-weight:700}
+.pressure-cell.not_evaluated{color:#8e9aaa}
+.pressure-cell-skeleton{display:block;width:25px;height:8px;border-radius:5px;background:linear-gradient(90deg,#e8edf2,#fff,#e8edf2);background-size:200% 100%;animation:pressure-skeleton 1.2s infinite}
+.pressure-heatmap-legend{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;color:#8795a4;font-size:9px;font-weight:700}
+.pressure-heatmap-legend i{display:block;width:105px;height:8px;border-radius:5px;background:linear-gradient(90deg,#bee8f9,#fae8aa,#f79677,#e04952)}
+.pressure-empty{padding:24px 10px 10px;color:#526272;text-align:center}
+.pressure-empty strong{display:block;font-size:12px}
+.pressure-empty p{margin:5px 0 0;color:#8795a4;font-size:10px}
+.pressure-error{margin:10px 0}
+@keyframes pressure-skeleton{from{background-position:200% 0}to{background-position:-200% 0}}
+.app.dark .pressure-dashboard,.app.dark .pressure-heatmap-card,.app.dark .run-detail-pressure-basis-panel{border-color:#293647;background:#111b28}
+.app.dark .pressure-dashboard-heading,.app.dark .pressure-card-title{color:#e7eef6}
+.app.dark .pressure-dashboard-heading small,.app.dark .pressure-card-title small{color:#9db1c6}
+.app.dark .pressure-summary-cards .detail-metric,.app.dark .pressure-filter-bar{border-color:#344356;background:#0d1622}
+.app.dark .pressure-filter-bar select,.app.dark .pressure-filter-bar input{border-color:#344356;background:#111d2e;color:#e2eaf2}
+.app.dark .pressure-heatmap-card{background:#111b28}
+.app.dark .pressure-basis-row{border-color:#2d3d50;background:#172231;color:#dbe5ef}
+.app.dark .pressure-basis-row:hover,.app.dark .pressure-basis-row.selected{border-color:#4c76a8;background:#1c3047}
+.app.dark .pressure-basis-row small{color:#9db1c6}
+.app.dark .pressure-heatmap-row>strong{background:#172536;color:#dbe5ef}
+.app.dark .pressure-heatmap-header{background:#1b3150;color:#dbe5ef}
+.app.dark .pressure-cell{color:#112b42}
+@media(max-width:1100px){.run-detail-chooser.integrated .run-detail-integrated-body{grid-template-columns:1fr}.pressure-dashboard{width:100%}.pressure-detail-metrics,.pressure-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.pressure-detail-metrics,.pressure-level-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.pressure-summary-cards{grid-template-columns:1fr}.pressure-filter-bar{grid-template-columns:1fr}.pressure-card-title{align-items:flex-start;flex-direction:column}}
