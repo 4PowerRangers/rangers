@@ -1,0 +1,38 @@
+name: juice_shop
+description: OWASP Juice Shop CTF environment
+target:
+  base_url: http://ranger-juice:3000
+  container: ranger-juice
+  runtime_aliases: [http://127.0.0.1:3001, http://localhost:3001]
+tls:
+  mode: passthrough
+  verify: true
+observer: environments.juice_shop.observer:JuiceShopObserver
+database:
+  engine: sqlite
+  path: /juice-shop/data/juiceshop.sqlite
+  bookkeeping_tables: [Challenges]
+  observation:
+    mode: sequelize_udp
+    bind_host: 127.0.0.1
+    port: 8765
+    token_env: RANGER_DB_OBSERVER_TOKEN
+
+lifecycle:
+  progress:
+    - stage: 1
+      name: recon_initial_access
+      when:
+        kind: web
+        action: request
+        attributes:
+          status: 200
+    - stage: 2
+      name: internal_expansion_goal
+      when:
+        kind: web
+        action: request
+        attributes:
+          path: /rest/user/login
+          status: 200
+          authentication.claims.data.role: admin
