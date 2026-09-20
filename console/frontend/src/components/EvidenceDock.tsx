@@ -17,17 +17,13 @@ function EventDecision({ status }: { status?: string }) {
   const value = status || "-";
   return <span className={`event-decision ${value}`}>{value === "goal" ? String.fromCharCode(9733) + " GOAL PROVEN" : value}</span>;
 }
-const roeNames: Record<string, string> = { R1: "Target", R2: "Tool", R3: "Activity", R4: "Operation", R5: "Outcome", R6: "Halt" };
-
 export function EvidenceDock({
   run,
   actions,
-  live,
   hasArtifact,
 }: {
   run?: Run;
   actions: Action[];
-  live?: any;
   hasArtifact: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -301,4 +297,3 @@ export function EvidenceDock({
     </section>
   );
 }
-
