@@ -162,7 +162,7 @@ def load_mission(scenario_path: Path | str, gateway: str = PROXY,
 
 def call_llm(messages: list[dict[str, str]], *,
              provider: str | None = None, model: str | None = None,
-             rangerture: float | None = None, seed: int | None = None,
+             temperature: float | None = None, seed: int | None = None,
              max_tokens: int | None = None, endpoint: str | None = None) -> str:
     provider = provider or PROVIDER
     model = model or MODEL_NAME
@@ -235,8 +235,8 @@ def call_llm(messages: list[dict[str, str]], *,
                 data["choices"][0]["message"]["content"])
     if provider == "ollama":
         options = {}
-        if rangerture is not None:
-            options["rangerture"] = rangerture
+        if temperature is not None:
+            options["temperature"] = temperature
         if seed is not None:
             options["seed"] = seed
         response = requests.post(
@@ -260,7 +260,7 @@ def call_llm(messages: list[dict[str, str]], *,
             json={
                 "model": model, "messages": messages,
                 "response_format": {"type": "json_object"}, "stream": False,
-                **({"rangerture": rangerture} if rangerture is not None else {}),
+                **({"temperature": temperature} if temperature is not None else {}),
                 **({"max_tokens": max_tokens} if max_tokens is not None else {}),
             },
             timeout=180,
@@ -418,7 +418,7 @@ def do_http(action: dict[str, Any], gateway: str | None = None) -> str:
 
 def run_episode(mission: str, gateway: str, max_steps: int, *,
                  provider: str | None = None, model: str | None = None,
-                 rangerture: float | None = None, on_step: Any = None,
+                 temperature: float | None = None, on_step: Any = None,
                  on_progress: Any = None, on_lifecycle: Any = None,
                  policy: Policy | None = None, enforce_policy: bool = False,
                  seed: int | None = None, run_id: str | None = None,
@@ -460,7 +460,7 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
     command_registry = build_tool_registry(lambda argv, timeout: {}, list(available_tools))
     adapter = adapter or InternalLLMAgentAdapter(
         mission=mission, provider=provider, model=model,
-        rangerture=rangerture, seed=seed if seed_supported else None,
+        temperature=temperature, seed=seed if seed_supported else None,
         # The run budget controls cumulative completion usage. It must not be
         # reused as a tiny per-call output cap: doing so truncated valid JSON
         # actions at 160 tokens and produced action_parse_failed.
