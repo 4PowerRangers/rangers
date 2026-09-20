@@ -23,7 +23,7 @@ from .model_relay import (
 from .invocation import ToolInvocation
 from .command_registry import build_tool_registry, model_tool_schemas
 from ..core.identity import action_id as make_action_id, request_id as make_request_id
-from .capability import Capability
+from .capability import CapabilityV2
 from .http_normalization import (
     _authentication_summary,
     prepare_http_action,
@@ -171,7 +171,7 @@ def call_llm(messages: list[dict[str, str]], *,
         try:
             response = requests.post(
                 f"{endpoint.rstrip('/')}/v1/chat/completions",
-                headers={"X-Rager-Provider": provider, "X-Rager-Model": model},
+                headers={"X-Ranger-Provider": provider, "X-Ranger-Model": model},
                 json={
                     "model": model, "messages": messages, "stream": False,
                     **({"max_tokens": max_tokens} if max_tokens is not None else {}),
@@ -368,7 +368,7 @@ def _do_http_legacy(action: dict[str, Any], gateway: str | None = None) -> str:
     if semantic_auth:
         safe_body = response.text
         response._content = (semantic_auth + "\n" + safe_body).encode("utf-8")
-    observer_feedback = response.headers.get("X-Rager-Observer-Feedback", "")
+    observer_feedback = response.headers.get("X-Ranger-Observer-Feedback", "")
     if isinstance(observer_feedback, str) and observer_feedback:
         response._content = (f"observer_feedback={observer_feedback}\n" + response.text).encode("utf-8")
     if 300 <= response.status_code < 400 and "Location" in response.headers:
@@ -441,7 +441,7 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
     capability_mode = capability_mode or os.environ.get("RANGER_CAPABILITY_MODE", "v2-a+knowledge")
     if capability_mode not in {"baseline", "v2-a", "v2-a+knowledge", "v2-a+knowledge+tools", "v2-full"}:
         raise ValueError("unsupported capability_mode")
-    capability = Capability(
+    capability = CapabilityV2(
         str((goal or {}).get("description"))
         if isinstance(goal, Mapping) and goal.get("description") else scenario,
         knowledge_enabled=capability_mode in {"v2-a+knowledge", "v2-a+knowledge+tools", "v2-full"},
@@ -922,10 +922,10 @@ def run_episode(mission: str, gateway: str, max_steps: int, *,
         request_action = dict(action)
         request_action["headers"] = {
             **(action.get("headers") or {}),
-            "X-Rager-Action-Id": action_id,
-            "X-Rager-Step": str(step),
-            "X-Rager-Request-Id": request_id,
-            **({"X-Rager-Correlation-Token": correlation_token} if correlation_token else {}),
+            "X-Ranger-Action-Id": action_id,
+            "X-Ranger-Step": str(step),
+            "X-Ranger-Request-Id": request_id,
+            **({"X-Ranger-Correlation-Token": correlation_token} if correlation_token else {}),
         }
         if gate is not None:
             gate_records[-1]["execution_attempted"] = True

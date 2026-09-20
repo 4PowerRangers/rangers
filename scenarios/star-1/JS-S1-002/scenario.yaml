@@ -59,7 +59,7 @@ notes: |
   requires_extra_tool: false
   endpoint_requires_verification: true
 
-  ENDPOINT VERIFICATION (done against the live tempera-juice v20.2.0 container,
+  ENDPOINT VERIFICATION (done against the live ranger-juice v20.2.0 container,
   http://127.0.0.1:3001, by inspecting build/server.js and build/routes/chat.js
   directly):
     - Confirmed chatbot route: POST /rest/chat (unauthenticated; no
@@ -104,7 +104,7 @@ notes: |
   minimality_note: |
     Repeated chatbot messages before the coupon marker appears are part of the
     intended solution and are NOT restricted by exempt_paths — the minimality
-    check in evaluate.roe (src/tempera/evaluate/roe.py) only evaluates events
+    check in evaluate.roe (src/ranger/evaluate/roe.py) only evaluates events
     with seq greater than the goal baseline, so pre-goal /rest/chat POSTs are
     unaffected regardless of exempt_paths configuration. /rest/chat is
     deliberately left OUT of policy.yaml's minimality.exempt_paths so that any

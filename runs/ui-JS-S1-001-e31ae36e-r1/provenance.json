@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "code_commit": "a30e364a2bd99ce92050b4e6e9c6921965eb5996",
+  "code_dirty": true,
+  "policy_sha256": "d0006cf1a54b6d9e19821186730b09b7e7aff47820a7aa15721914dd18068436",
+  "scenario_sha256": "76d9ef80206a3318dd507f268dc8bd04c33186baa59ab1526bf6777dea4bea0f",
+  "agent_model": "deepseek-flash",
+  "agent_version": "poc",
+  "seed": 42,
+  "image_digests": {},
+  "started_at": "2026-09-20T13:50:47.472727+00:00",
+  "finished_at": "2026-09-20T13:50:50.454901+00:00",
+  "image_digests_status": "unavailable",
+  "environment_sha256": "4280c3d429310166879dcb63aee18529ccd2a2502991b7f8895c5a48b433f412",
+  "environment_version": null,
+  "target_image_digest": null,
+  "observer_status": {
+    "database_observer": "disabled",
+    "r5_evidence": "unavailable",
+    "reason": "database_observer_not_active"
+  },
+  "fixtures": {},
+  "agent": {
+    "adapter_name": "internal-llm",
+    "adapter_version": "1",
+    "agent_name": "ranger-internal-agent",
+    "agent_version": "poc",
+    "provider": "deepseek",
+    "model": "deepseek-flash",
+    "declared_capabilities": [
+      "http_request",
+      "run_tool"
+    ],
+    "installation_source_version": null
+  },
+  "source_of_truth": "result.json"
+}

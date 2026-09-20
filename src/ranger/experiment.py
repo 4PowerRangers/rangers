@@ -8,12 +8,12 @@ import re
 from statistics import mean
 from typing import Any, Callable, Mapping
 
-from .core.result import BenchmarkResult
+from .core.result import RealSystemActivity
 from .core.run import _atomic_json
 from .core.bundle import validate_run
 
 
-def _value(result: BenchmarkResult | Mapping[str, Any], *path: str, default: Any = None) -> Any:
+def _value(result: RealSystemActivity | Mapping[str, Any], *path: str, default: Any = None) -> Any:
     value: Any = result
     for key in path:
         if isinstance(value, Mapping):
@@ -23,7 +23,7 @@ def _value(result: BenchmarkResult | Mapping[str, Any], *path: str, default: Any
     return value
 
 
-def _metrics(result: BenchmarkResult | Mapping[str, Any]) -> dict[str, Any]:
+def _metrics(result: RealSystemActivity | Mapping[str, Any]) -> dict[str, Any]:
     control = _value(result, "control_effectiveness", default={}) or {}
     return {
         "goal_success": bool(_value(result, "goal", "success", default=False)),
@@ -48,7 +48,7 @@ def _delta(on: Any, off: Any) -> Any:
     return on - off
 
 
-def _identity(result: BenchmarkResult | Mapping[str, Any], config: Mapping[str, Any], key: str, fallback: str) -> Any:
+def _identity(result: RealSystemActivity | Mapping[str, Any], config: Mapping[str, Any], key: str, fallback: str) -> Any:
     value = _value(result, "provenance", key, default=None)
     if value not in (None, "unknown"):
         return value
@@ -59,7 +59,7 @@ def _identity(result: BenchmarkResult | Mapping[str, Any], config: Mapping[str, 
     return config.get(key, config.get(fallback, fallback))
 
 
-def _reproducibility(result: BenchmarkResult | Mapping[str, Any], config: Mapping[str, Any]) -> dict[str, Any]:
+def _reproducibility(result: RealSystemActivity | Mapping[str, Any], config: Mapping[str, Any]) -> dict[str, Any]:
     value = _value(result, "reproducibility", default={}) or {}
     return {
         "seed_requested": value.get("seed_requested", config.get("seed")),
@@ -67,14 +67,14 @@ def _reproducibility(result: BenchmarkResult | Mapping[str, Any], config: Mappin
     }
 
 
-def _agent_metadata(result: BenchmarkResult | Mapping[str, Any]) -> Mapping[str, Any]:
+def _agent_metadata(result: RealSystemActivity | Mapping[str, Any]) -> Mapping[str, Any]:
     return _value(result, "agent_metadata", default={}) or {}
 
 
 def build_pair_summary(
     experiment_id: str,
-    off: BenchmarkResult | Mapping[str, Any],
-    on: BenchmarkResult | Mapping[str, Any],
+    off: RealSystemActivity | Mapping[str, Any],
+    on: RealSystemActivity | Mapping[str, Any],
     *,
     off_config: Mapping[str, Any] | None = None,
     on_config: Mapping[str, Any] | None = None,
@@ -388,7 +388,7 @@ def run_ab_experiment(
             errors.append(f"{arm}: {type(exc).__name__}: {exc}")
             stores[arm] = None
 
-    results: list[BenchmarkResult | None] = []
+    results: list[RealSystemActivity | None] = []
     configs: list[Mapping[str, Any]] = []
     for arm in ("guardrail_off", "guardrail_on"):
         store = stores.get(arm)
@@ -397,7 +397,7 @@ def run_ab_experiment(
             configs.append({})
             continue
         configs.append(json.loads(store.config_path.read_text(encoding="utf-8")))
-        results.append(BenchmarkResult.from_dict(
+        results.append(RealSystemActivity.from_dict(
             json.loads(store.result_path.read_text(encoding="utf-8"))
         ))
     if all(results):

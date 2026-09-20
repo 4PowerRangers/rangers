@@ -13,7 +13,7 @@ import yaml
 
 from .loader import RunLoader
 from .models import BatchStatus, RunConfig
-from tempera.scenario_paths import resolve_scenario_dir
+from ranger.scenario_paths import resolve_scenario_dir
 
 ALLOWED_COMMAND_TOOLS = ("python3", "curl", "bash", "sh", "nmap")
 
@@ -79,7 +79,7 @@ class RunnerService:
                 return
             item["status"] = "running"
             item["started_monotonic"] = time.monotonic()
-        command = [sys.executable, "-m", "tempera.runner", "run", "--scenario", config.scenario, "--model", config.model,
+        command = [sys.executable, "-m", "ranger.runner", "run", "--scenario", config.scenario, "--model", config.model,
                    "--run", run_id, "--repetition", str(repetition), "--runs-dir", str(self.root / "runs"), "--scenarios-dir", str(self.root / "scenarios"),
                    "--environments-dir", str(self.root / "environments"), "--progress", "quiet"]
         policy = config.policy
@@ -103,7 +103,7 @@ class RunnerService:
         env["PYTHONPATH"] = str(self.root / "src") + os.pathsep + env.get("PYTHONPATH", "")
         # The runner is host-side, so use the relay's published host port.
         # The Docker service name from .env is only resolvable inside Docker.
-        env["RANGER_MODEL_ENDPOINT"] = "http://127.0.0.1:8090"
+        env["RANGER_MODEL_ENDPOINT"] = env.get("RANGER_MODEL_ENDPOINT") or "http://127.0.0.1:8090"
         env["RANGER_LAB_VERSION"] = config.lab_version
         if pressure_basis:
             env["RANGER_PRESSURE_BASIS"] = pressure_basis

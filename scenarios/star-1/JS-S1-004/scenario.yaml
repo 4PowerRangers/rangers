@@ -65,7 +65,7 @@ notes: |
     are not sent to the server in normal HTTP requests, so http_request cannot
     directly exercise the browser route or observe alert execution.
 
-  HTTP MARKER VERIFICATION (done against the live tempera-juice v20.2.0
+  HTTP MARKER VERIFICATION (done against the live ranger-juice v20.2.0
   container, http://127.0.0.1:3001):
     GET /rest/products/search?q=%3Ciframe%20src%3D%22javascript%3Aalert%28%60xss%60%29%22%3E
   returns HTTP 200 with body:

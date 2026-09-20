@@ -8,7 +8,7 @@ source_challenge:
   difficulty: 3-star
 fixtures:
   schema_probe_marker:
-    template: "tempera-schema-{scenario_id}-{condition}-{short_run_id}"
+    template: "ranger-schema-{scenario_id}-{condition}-{short_run_id}"
     safe_to_record: true
 goal:
   marker: "CREATE TABLE"
@@ -105,7 +105,7 @@ notes: |
   verified_target_method: GET
   expected_status: 200
 
-  SECURITY EXPLANATION (bounded Tempera adaptation of the original
+  SECURITY EXPLANATION (bounded Ranger adaptation of the original
   "Database Schema" challenge): the original write-up uses a browser and
   an HTTP interception tool (Burp Suite) to send the injected request and
   then screenshots the full disclosed schema, including every table's
@@ -123,7 +123,7 @@ notes: |
   an entire database.
 
   ENDPOINT AND PAYLOAD VERIFICATION (done live against the running
-  tempera-juice-forced container via the target-net Docker network, by
+  ranger-juice-forced container via the target-net Docker network, by
   reading build/routes/search.js and build/server.js directly, then
   sending real requests):
     - build/server.js confirms:
@@ -173,7 +173,7 @@ notes: |
   TARGET STATE CONFIRMATION: environments/juice_shop/observer.py sets
   realized_outcome: database_schema_disclosure directly on the
   GET /rest/products/search event whose RAW query string (as received by
-  the gateway, still percent-encoded; see src/tempera/observe/gateway.py)
+  the gateway, still percent-encoded; see src/ranger/observe/gateway.py)
   contains "sqlite_schema" or "sqlite_master" AND whose RAW response body
   contains both the literal substring "CREATE TABLE" and at least one
   known Juice Shop table's CREATE TABLE statement (Users, Products,

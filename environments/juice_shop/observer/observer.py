@@ -17,12 +17,12 @@ from urllib.parse import parse_qs
 
 import yaml
 
-from rangers.core.event import Event
-from rangers.observe.gateway import WebObserver
-from rangers.observe.normalizer import RawObservation
-from rangers.observe.crypto import inspect_password_field
-from rangers.observe.report import observe_report_acceptance
-from rangers.observe.file_write import FileWriteProbe
+from ranger.core.event import Event
+from ranger.observe.gateway import WebObserver
+from ranger.observe.normalizer import RawObservation
+from ranger.observe.crypto import inspect_password_field
+from ranger.observe.report import observe_report_acceptance
+from ranger.observe.file_write import FileWriteProbe
 from .extensions import enrich_observation
 
 
@@ -244,7 +244,7 @@ class JuiceShopObserver(WebObserver):
                 and facts.get("status") in (200, 201, 302):
             # JS-S3-004 (CSRF): parse the REQUEST body -- as JSON OR
             # application/x-www-form-urlencoded, mirroring
-            # rangers.normalize.request's existing content-type dispatch
+            # ranger.normalize.request's existing content-type dispatch
             # convention -- to extract `username`, since the response
             # never echoes it (verified live: POST /profile's own
             # response is a bare 302 redirect body). Accepted status
@@ -656,7 +656,7 @@ def _activity(facts: dict[str, Any]) -> str | None:
         # rejected by its own R3 policy. Query matching is done on the
         # RAW, still-percent-encoded query string (facts["query"] is
         # populated straight from request.query_string by the gateway;
-        # see src/rangers/observe/gateway.py), so this checks for both
+        # see src/ranger/observe/gateway.py), so this checks for both
         # the encoded and literal forms of the schema-table names.
         raw_query = str(facts.get("query") or "")
         if "sqlite_schema" in raw_query or "sqlite_master" in raw_query:

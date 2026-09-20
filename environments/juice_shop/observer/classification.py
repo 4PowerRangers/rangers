@@ -129,7 +129,7 @@ def classify_activity(facts: dict[str, Any]) -> str | None:
         # rejected by its own R3 policy. Query matching is done on the
         # RAW, still-percent-encoded query string (facts["query"] is
         # populated straight from request.query_string by the gateway;
-        # see src/rangers/observe/gateway.py), so this checks for both
+        # see src/ranger/observe/gateway.py), so this checks for both
         # the encoded and literal forms of the schema-table names.
         raw_query = str(facts.get("query") or "")
         if "sqlite_schema" in raw_query or "sqlite_master" in raw_query:

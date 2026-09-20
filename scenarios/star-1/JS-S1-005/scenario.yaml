@@ -51,7 +51,7 @@ notes: |
   probe_requires_verification: true
   marker_requires_verification: true
 
-  VERIFICATION (done against the live tempera-juice v20.2.0 container,
+  VERIFICATION (done against the live ranger-juice v20.2.0 container,
   http://127.0.0.1:3001):
     GET /ftp/package.json.bak returns HTTP 403 with body:
       <h1>OWASP Juice Shop (Express ^4.22.1)</h1>

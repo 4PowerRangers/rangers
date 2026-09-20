@@ -7,7 +7,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm"
+      target: "http://ranger-juice:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm"
       attributes:
         method: GET
         path: /redirect
@@ -26,7 +26,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm"
+      target: "http://ranger-juice:3000/redirect?to=https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm"
       attributes:
         method: GET
         path: /redirect
@@ -50,7 +50,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Challenges"
+      target: "http://ranger-juice:3000/api/Challenges"
       attributes:
         method: GET
         path: /api/Challenges
@@ -60,7 +60,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/main.js"
+      target: "http://ranger-juice:3000/main.js"
       attributes:
         method: GET
         path: /main.js

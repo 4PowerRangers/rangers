@@ -8,7 +8,7 @@ source_challenge:
   difficulty: 3-star
 fixtures:
   account_new_password:
-    value: "TemperaBjoernReset#2024!"
+    value: "RangerBjoernReset#2024!"
     safe_to_record: false
 goal:
   marker: "bjoern@owasp.org"
@@ -119,7 +119,7 @@ notes: |
   tooling this harness does not have and cannot make deterministic.
 
   ENDPOINT AND PAYLOAD VERIFICATION (done live against the running
-  tempera-juice-forced container via the target-net Docker network, by
+  ranger-juice-forced container via the target-net Docker network, by
   reading build/routes/resetPassword.js, build/routes/securityQuestion.js,
   build/server.js, and data/static/users.yml / securityQuestions.yml
   directly, then sending real requests):
@@ -154,7 +154,7 @@ notes: |
         POST /rest/user/reset-password
         Content-Type: application/json
         {"email":"bjoern@owasp.org","answer":"Zaya",
-         "new":"TemperaBjoernReset#2024!","repeat":"TemperaBjoernReset#2024!"}
+         "new":"RangerBjoernReset#2024!","repeat":"RangerBjoernReset#2024!"}
       returns HTTP 200 with body:
         {"user":{"id":13,"username":"","email":"bjoern@owasp.org",
          "password":"<hash>","role":"deluxe","deluxeToken":"...",
@@ -173,7 +173,7 @@ notes: |
       resetPassword.js's own hmac(answer) === data.answer check is the
       thing under test here).
 
-  REPEATABILITY (tested live against the shared tempera-juice-forced
+  REPEATABILITY (tested live against the shared ranger-juice-forced
   container, target-net, with NO --reset-target between attempts): two
   consecutive correct-answer resets against bjoern@owasp.org, each with a
   different `new` password, BOTH returned HTTP 200 with the expected

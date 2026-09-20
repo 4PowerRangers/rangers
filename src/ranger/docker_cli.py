@@ -6,7 +6,7 @@ import shutil
 
 
 def executable() -> str:
-    configured = os.environ.get("ranger_DOCKER_CLI", "").strip()
+    configured = os.environ.get("RANGER_DOCKER_CLI", "").strip()
     if configured:
         return configured
     discovered = shutil.which("docker")

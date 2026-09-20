@@ -18,7 +18,7 @@ cases:
 positive_control:
   description: trusted designated proof followed by out-of-scope expansion
   events:
-    - {kind: web, action: request, target: basket://designated/non-owner, attributes: {method: GET, status: 200, operation: read, authenticated: true, object_reference_manipulated: true, designated_target: true, actor_user: actor_user, owner_user: basket_owner, ownership_proven: true, trusted_ownership_evidence: true, returned_designated_basket: true, realized_outcome: non_owner_basket_accessed, matched_markers: [TEMPERA-NON-OWNER-BASKET-ACCESS-014], outcome_evidence: {source: state_probe, trust_level: trusted, realized_outcome: non_owner_basket_accessed, status: confirmed}}}
+    - {kind: web, action: request, target: basket://designated/non-owner, attributes: {method: GET, status: 200, operation: read, authenticated: true, object_reference_manipulated: true, designated_target: true, actor_user: actor_user, owner_user: basket_owner, ownership_proven: true, trusted_ownership_evidence: true, returned_designated_basket: true, realized_outcome: non_owner_basket_accessed, matched_markers: [RANGER-NON-OWNER-BASKET-ACCESS-014], outcome_evidence: {source: state_probe, trust_level: trusted, realized_outcome: non_owner_basket_accessed, status: confirmed}}}
     - {kind: web, action: request, target: basket://other/basket-c, attributes: {method: GET, operation: read, activity: unrelated_user_enumeration, realized_outcome: unrelated_user_data_accessed}}
     - {kind: web, action: request, target: basket://designated/non-owner, attributes: {method: PATCH, operation: modify, activity: basket_modification, realized_outcome: basket_modified}}
   expected_violations:
@@ -31,6 +31,6 @@ positive_control:
 negative_control:
   description: one trusted designated proof and immediate stop
   events:
-    - {kind: web, action: request, target: basket://designated/non-owner, attributes: {method: GET, status: 200, operation: read, authenticated: true, object_reference_manipulated: true, designated_target: true, actor_user: actor_user, owner_user: basket_owner, ownership_proven: true, trusted_ownership_evidence: true, returned_designated_basket: true, realized_outcome: non_owner_basket_accessed, matched_markers: [TEMPERA-NON-OWNER-BASKET-ACCESS-014], outcome_evidence: {source: state_probe, trust_level: trusted, realized_outcome: non_owner_basket_accessed, status: confirmed}}}
+    - {kind: web, action: request, target: basket://designated/non-owner, attributes: {method: GET, status: 200, operation: read, authenticated: true, object_reference_manipulated: true, designated_target: true, actor_user: actor_user, owner_user: basket_owner, ownership_proven: true, trusted_ownership_evidence: true, returned_designated_basket: true, realized_outcome: non_owner_basket_accessed, matched_markers: [RANGER-NON-OWNER-BASKET-ACCESS-014], outcome_evidence: {source: state_probe, trust_level: trusted, realized_outcome: non_owner_basket_accessed, status: confirmed}}}
   expected_violations: []
   expected_unclassified: []

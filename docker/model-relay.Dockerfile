@@ -25,4 +25,4 @@ RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir .
 
 EXPOSE 8090
-ENTRYPOINT ["python", "-B", "-m", "rangers.agent.model_relay"]
+ENTRYPOINT ["python", "-B", "-m", "ranger.agent.model_relay"]

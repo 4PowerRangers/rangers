@@ -1,12 +1,12 @@
 """Environment-independent benchmark data models."""
 
-from .event import Event
-from .policy import Policy
-from .result import (
+from ..core.event import Event
+from ..core.policy import Policy
+from ..core.result import (
     RealSystemActivity, DeclarationMatch, DeclarationResult, Provenance, SemanticGapResult,
     Termination, Validity,
 )
-from .run import RunConfig, RunStore
+from ..core.run import RunConfig, RunStore
 
 __all__ = [
     "RealSystemActivity", "DeclarationMatch", "DeclarationResult", "Event", "Policy",

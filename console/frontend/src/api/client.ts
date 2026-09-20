@@ -1,4 +1,4 @@
-const BASE=import.meta.env.VITE_API_URL??'http://127.0.0.1:8000';
+const BASE=import.meta.env.VITE_API_URL??'';
 const json=async(r:Response)=>{const body=await r.json().catch(()=>({}));if(!r.ok){const detail=body?.detail;const message=typeof detail==='string'?detail:typeof detail?.message==='string'?`${detail.message}${detail.error?`: ${detail.error}`:''}`:`Request failed (${r.status})`;throw new Error(message)}return body};
 export const api={
  getScenarios:()=>fetch(`${BASE}/api/meta/scenarios`).then(json),

@@ -29,7 +29,7 @@ HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
 DROP_RESPONSE_HEADERS = {
     "connection", "content-encoding", "content-length", "transfer-encoding"
 }
-OBSERVER_FEEDBACK_HEADER = "X-Rager-Observer-Feedback"
+OBSERVER_FEEDBACK_HEADER = "X-Ranger-Observer-Feedback"
 EventSink = Callable[[Event], None]
 
 
@@ -340,7 +340,7 @@ def create_app(upstream: str, run_id: str, actor: str, event_sink: EventSink,
     app = Flask(__name__)
     normalizer = observer or WebObserver()
 
-    @app.route("/__rager_gateway_health__")
+    @app.route("/__ranger_gateway_health__")
     def gateway_health() -> Response:
         return Response("ok", 200, {"Content-Type": "text/plain"})
 
@@ -363,27 +363,27 @@ def create_app(upstream: str, run_id: str, actor: str, event_sink: EventSink,
         headers = {key: value for key, value in request.headers if key.lower() != "host"}
         action_id = next(
             (value for key, value in headers.items()
-             if key.lower() == "x-rager-action-id"), None
+             if key.lower() == "x-ranger-action-id"), None
         )
         step_header = next(
             (value for key, value in headers.items()
-             if key.lower() == "x-rager-step"), None,
+             if key.lower() == "x-ranger-step"), None,
         )
         request_id_header = next(
             (value for key, value in headers.items()
-             if key.lower() == "x-rager-request-id"), None,
+             if key.lower() == "x-ranger-request-id"), None,
         )
         headers = {
             key: value for key, value in headers.items()
-            if key.lower() not in {"x-rager-action-id", "x-rager-step", "x-rager-request-id"}
+            if key.lower() not in {"x-ranger-action-id", "x-ranger-step", "x-ranger-request-id"}
         }
         correlation_token = next(
             (value for key, value in request.headers.items()
-             if key.lower() == "x-rager-correlation-token"), None,
+             if key.lower() == "x-ranger-correlation-token"), None,
         )
         invocation_token = next(
             (value for key, value in request.headers.items()
-             if key.lower() == "x-rager-invocation-token"), None,
+             if key.lower() == "x-ranger-invocation-token"), None,
         )
         bound_action_id = action_id
         observed_event_id = make_event_id(seq) if seq >= 0 else None
@@ -526,7 +526,7 @@ HttpObserver = WebObserver
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Rager HTTP/HTTPS gateway observer")
+    parser = argparse.ArgumentParser(description="Ranger HTTP/HTTPS gateway observer")
     parser.add_argument("--upstream", required=True)
     parser.add_argument("--run", default="run-adhoc")
     parser.add_argument("--runs-dir", type=Path, default=Path("runs"))
@@ -578,9 +578,9 @@ def main() -> None:
         observer=observer, timeout=config.timeout, sequence_allocator=SequenceAllocator(),
         lifecycle_sink=store.append_lifecycle,
     )
-    print(f"[rager] run: {run_id}")
-    print(f"[rager] upstream: {args.upstream}")
-    print(f"[rager] events: {store.events_path}")
+    print(f"[ranger] run: {run_id}")
+    print(f"[ranger] upstream: {args.upstream}")
+    print(f"[ranger] events: {store.events_path}")
     app.run(host="0.0.0.0", port=8080, threaded=True)
 
 

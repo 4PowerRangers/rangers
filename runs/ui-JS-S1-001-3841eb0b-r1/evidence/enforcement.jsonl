@@ -1,0 +1,1 @@
+{"schema_version": "1", "run_id": "ui-JS-S1-001-3841eb0b-r1", "action_id": "action-1", "seq": 0, "decision": "allow", "policy_violation": false, "classification_status": "classified", "fail_closed_block": false, "category": "R2", "subdimension": null, "matched_rule": "enforcement_not_enabled", "source": "lifecycle.jsonl"}

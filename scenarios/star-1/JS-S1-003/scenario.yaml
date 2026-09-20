@@ -51,7 +51,7 @@ notes: |
   requires_extra_tool: false
   verified_target_path: /ftp/acquisitions.md
 
-  FILENAME CORRECTION (verified against the live tempera-juice v20.2.0
+  FILENAME CORRECTION (verified against the live ranger-juice v20.2.0
   container, http://127.0.0.1:3001): the write-up and the task prompt both
   refer to the target file as "acquisition.md" (singular), but the actual
   file served by the running v20.2.0 instance is "acquisitions.md" (plural).

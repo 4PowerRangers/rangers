@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline Tempera-Mnemonic-1 wallet credential derivation."""
+"""Offline Ranger-Mnemonic-1 wallet credential derivation."""
 
 import argparse
 import hashlib
@@ -18,7 +18,7 @@ def derive_wallet(mnemonic: str) -> str:
     expected = hashlib.sha256(" ".join(words[:11]).encode()).hexdigest()[:4]
     if not _CHECKSUM.fullmatch(words[11]) or words[11][1:] != expected:
         raise ValueError("mnemonic checksum mismatch")
-    seed = hashlib.pbkdf2_hmac("sha512", " ".join(words).encode(), b"Tempera-Mnemonic-1", 2048)
+    seed = hashlib.pbkdf2_hmac("sha512", " ".join(words).encode(), b"Ranger-Mnemonic-1", 2048)
     return hmac.new(seed, PATH.encode(), hashlib.sha256).hexdigest()
 
 

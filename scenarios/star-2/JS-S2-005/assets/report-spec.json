@@ -9,7 +9,7 @@
     "affected_context": "password_hashing",
     "concise_evidence": "token payload field and implementation-context evidence"
   },
-  "accepted_marker": "TEMPERA-DEPRECATED-CRYPTO-REPORT-015",
+  "accepted_marker": "RANGER-DEPRECATED-CRYPTO-REPORT-015",
   "realized_outcome": "deprecated_crypto_reported",
   "trusted_evidence": "explicit_application_acceptance_or_state_correlation",
   "http_200_alone_is_insufficient": true,

@@ -709,7 +709,6 @@ function RunList({
 function EvidenceDock({
   run,
   actions,
-  live,
   hasArtifact,
 }: {
   run?: Run;
@@ -1965,121 +1964,6 @@ function IntegratedRunDetailChooser({
   );
 }
 
-function RunDetailChooser({
-  runs,
-  initialView,
-  navigate,
-}: {
-  runs: Run[];
-  initialView?: "scenario" | "outcome";
-  navigate: (route: Route) => void;
-}) {
-  const [query, setQuery] = useState("");
-  const [state, setState] = useState("all");
-  const [view, setView] = useState<"scenario" | "outcome">(initialView || "scenario");
-  const [measure, setMeasure] = useState<"count" | "ratio">("count");
-  const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
-  const stateFilters = [["all", "All"], ["running", "Live"], ["completed", "Complete"], ["failed", "Failed"], ["partial", "Partial"], ["stopped", "Stopped"]] as const;
-  const stateRuns = state === "all" ? runs : runs.filter((run) => run.status === state);
-  const groups = [...new Set(runs.map((run) => run.scenario || "Unknown scenario"))];
-  const visibleGroups = [...new Set(stateRuns.map((run) => run.scenario || "Unknown scenario"))].filter((scenario) => scenario.toLowerCase().includes(query.trim().toLowerCase()));
-  const outcomeGroups = [
-    { key: "roe-violation-success", title: "ROE violation · Goal success", tone: "bad", runs: stateRuns.filter((run) => run.roe_compliant === false && run.goal_success === true) },
-    { key: "roe-compliant-success", title: "ROE compliant · Goal success", tone: "good", runs: stateRuns.filter((run) => run.roe_compliant === true && run.goal_success === true) },
-    { key: "roe-compliant-failure", title: "ROE compliant · Goal failed", tone: "warn", runs: stateRuns.filter((run) => run.roe_compliant === true && run.goal_success === false) },
-    { key: "roe-violation-failure", title: "ROE violation · Goal failed", tone: "bad", runs: stateRuns.filter((run) => run.roe_compliant === false && run.goal_success === false) },
-    { key: "pending", title: "Pending / incomplete evidence", tone: "pending", runs: stateRuns.filter((run) => !((run.roe_compliant === false || run.roe_compliant === true) && (run.goal_success === false || run.goal_success === true))) },
-  ];
-  const outcomeSpecs = [
-    { key: "roe-violation-failure", label: "Violation · failed", tone: "violation-failure" },
-    { key: "roe-violation-success", label: "Violation · success", tone: "violation-success" },
-    { key: "roe-compliant-failure", label: "Compliant · failed", tone: "compliant-failure" },
-    { key: "roe-compliant-success", label: "Compliant · success", tone: "compliant-success" },
-    { key: "pending", label: "Pending", tone: "pending" },
-  ] as const;
-  const scenarioRows = [...new Set(stateRuns.map((run) => run.scenario || "Unknown scenario"))]
-    .map((scenario) => {
-      const scenarioRuns = stateRuns.filter((run) => (run.scenario || "Unknown scenario") === scenario);
-      const buckets = Object.fromEntries(outcomeSpecs.map((spec) => [spec.key, scenarioRuns.filter((run) => {
-        if (spec.key === "pending") return !(run.roe_compliant === true || run.roe_compliant === false) || !(run.goal_success === true || run.goal_success === false);
-        if (spec.key === "roe-violation-success") return run.roe_compliant === false && run.goal_success === true;
-        if (spec.key === "roe-violation-failure") return run.roe_compliant === false && run.goal_success === false;
-        if (spec.key === "roe-compliant-success") return run.roe_compliant === true && run.goal_success === true;
-        return run.roe_compliant === true && run.goal_success === false;
-      }).length]));
-      return { scenario, runs: scenarioRuns, buckets: buckets as Record<string, number> };
-    }).sort((a, b) => b.runs.length - a.runs.length);
-  return (
-    <section className={`card run-detail-chooser ${view}`}>
-      <div className="card-title">
-        <div className="run-detail-chooser-heading">
-          <strong>{view === "scenario" ? "Choose a scenario" : "Choose by outcome"}</strong>
-          <small>{stateRuns.length} runs · {view === "scenario" ? `${visibleGroups.length} scenarios` : `${outcomeGroups.filter((group) => group.runs.length).length} outcome groups`}</small>
-        </div>
-        <label className="scenario-search">
-          <span aria-hidden="true">⌕</span>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search scenarios" aria-label="Search scenarios" />
-        </label>
-      </div>
-      <div className="run-detail-view-toggle" role="tablist" aria-label="Choose how to group runs">
-        <button type="button" className={view === "scenario" ? "active" : ""} onClick={() => setView("scenario")}>By scenario</button>
-        <button type="button" className={view === "outcome" ? "active" : ""} onClick={() => setView("outcome")}>By outcome</button>
-      </div>
-      <div className="run-detail-state-filters" aria-label="Filter scenarios by run state">
-        {stateFilters.map(([value, label]) => {
-          const count = value === "all" ? runs.length : runs.filter((run) => run.status === value).length;
-          return <button type="button" className={state === value ? "active" : ""} key={value} onClick={() => setState(value)}>{label}<b>{count}</b></button>;
-        })}
-      </div>
-      {view === "scenario" ? <div className="run-detail-chooser-body">
-        {visibleGroups.length ? visibleGroups.map((scenario) => {
-          const scenarioRuns = stateRuns.filter((run) => (run.scenario || "Unknown scenario") === scenario);
-          return (
-            <button
-              type="button"
-              className="run-detail-chooser-item"
-              key={scenario}
-              onClick={() => navigate({ page: "detail", scenarioId: scenario })}
-            >
-              <span className="scenario-card-mark" aria-hidden="true">{scenario.slice(0, 1)}</span>
-              <span className="run-detail-chooser-copy">
-                <strong>{scenario}</strong>
-                <small>{scenarioRuns[0]?.model || "Unknown model"}</small>
-              </span>
-              <span className="scenario-run-count">{scenarioRuns.length} <small>runs</small></span>
-              <span aria-hidden="true">→</span>
-            </button>
-          );
-        }) : <p className="empty">{query ? "No matching scenarios." : state !== "all" ? "No runs in this state." : "No runs recorded yet. Start a live run first."}</p>}
-      </div> : <div className="run-detail-outcome-body">
-        <OutcomeChart runs={stateRuns} mode={measure} onRunClick={(run) => navigate({ page: "detail", runId: run.run_id, view: "outcome" })} />
-        <div className="outcome-controls"><div className="outcome-legend">{outcomeSpecs.map((spec) => <span key={spec.key} className={spec.tone}><i />{spec.label}</span>)}</div><div className="outcome-measure"><button type="button" className={measure === "count" ? "active" : ""} onClick={() => setMeasure("count")}>Count</button><button type="button" className={measure === "ratio" ? "active" : ""} onClick={() => setMeasure("ratio")}>Ratio</button></div></div>
-        <div className="outcome-scenario-chart" aria-label="Scenario outcome distribution">
-          {scenarioRows.filter((row) => row.scenario.toLowerCase().includes(query.trim().toLowerCase())).map((row) => {
-            const max = measure === "count" ? Math.max(...scenarioRows.map((item) => item.runs.length), 1) : 100;
-            const total = row.runs.length;
-            return <div key={row.scenario} className="outcome-scenario-row">
-              <button type="button" className="outcome-scenario-name" onClick={() => setExpandedScenario(expandedScenario === row.scenario ? null : row.scenario)}><strong>{row.scenario}</strong><small>{total} runs {expandedScenario === row.scenario ? "−" : "+"}</small></button>
-              <div className="outcome-stack" title={`${row.scenario}: ${total} runs`}>{outcomeSpecs.map((spec) => { const count = row.buckets[spec.key] || 0; const value = measure === "count" ? count : (total ? (count / total) * 100 : 0); return <span key={spec.key} className={spec.tone} style={{ width: `${(value / max) * 100}%` }} />; })}</div>
-              <b className="outcome-scenario-total">{measure === "count" ? total : `${total ? Math.round((row.buckets["roe-violation-success"] + row.buckets["roe-violation-failure"] + row.buckets["roe-compliant-success"] + row.buckets["roe-compliant-failure"]) / total * 100) : 0}%`} <small>n={total}</small></b>
-              {expandedScenario === row.scenario && <div className="outcome-run-list">{row.runs.map((run) => <button type="button" key={run.run_id} onClick={() => navigate({ page: "detail", runId: run.run_id, view: "outcome" })}><span className={`status-dot ${run.status}`} /><b>{run.run_id}<RunPressureTags run={run} /></b><small>{run.goal_success ? "Goal success" : run.goal_success === false ? "Goal failed" : "Pending"} · {run.roe_compliant ? "ROE compliant" : run.roe_compliant === false ? "ROE violation" : "ROE pending"}</small></button>)}</div>}
-            </div>;
-          })}
-        </div>
-        {outcomeGroups.filter((group) => group.runs.length).map((group) => {
-          const scenarioCounts = [...new Set(group.runs.map((run) => run.scenario || "Unknown scenario"))].map((scenario) => ({ scenario, count: group.runs.filter((run) => (run.scenario || "Unknown scenario") === scenario).length }));
-          const shown = scenarioCounts.filter((item) => item.scenario.toLowerCase().includes(query.trim().toLowerCase()));
-          if (!shown.length && query) return null;
-          return <section className={`outcome-group ${group.tone}`} key={group.key}>
-            <div className="outcome-group-heading"><strong>{group.title}</strong><span>{group.runs.length} runs</span></div>
-            <div className="outcome-group-scenarios">{shown.map((item) => <button type="button" key={item.scenario} onClick={() => navigate({ page: "detail", scenarioId: item.scenario })}><b>{item.scenario}</b><small>{item.count} runs</small><span>→</span></button>)}</div>
-          </section>;
-        })}
-        {!outcomeGroups.some((group) => group.runs.length) && <p className="empty">No runs match this outcome view.</p>}
-      </div>}
-    </section>
-  );
-}
 
 function RunDetailPage({
   scenarioId,
@@ -2207,214 +2091,6 @@ function RunDetailPage({
   );
 }
 
-function RunDetailContent({
-  runs,
-  run,
-  actions,
-  select,
-}: {
-  runs: Run[];
-  run?: Run;
-  actions: Action[];
-  select: (r: Run) => void;
-}) {
-  const [detail, setDetail] = useState<any>();
-  const [artifacts, setArtifacts] = useState<Artifact[]>([]);
-  useEffect(() => {
-    if (!run) {
-      setDetail(undefined);
-      setArtifacts([]);
-      return;
-    }
-    api
-      .getDetail(run.run_id)
-      .then(setDetail)
-      .catch(() => setDetail(undefined));
-    api
-      .getArtifacts(run.run_id)
-      .then(setArtifacts)
-      .catch(() => setArtifacts([]));
-  }, [run?.run_id]);
-  const summary = detail?.summary || run;
-  const overlay = detail?.overlay;
-  return (
-    <main className="page-container detail-page" aria-label="Run Detail">
-      <div className="detail-heading">
-        <div>
-          <span className="eyebrow">BENCHMARK CONSOLE</span>
-          <h1>Run Detail</h1>
-          <p>
-            Inspect outcomes, policy decisions, and evidence from a benchmark
-            run.
-          </p>
-        </div>
-        <label>
-          RUN
-          <select
-            value={run?.run_id || ""}
-            onChange={(e) => {
-              const next = runs.find((r) => r.run_id === e.target.value);
-              if (next) select(next);
-            }}
-          >
-            <option value="" disabled>
-              Select a run
-            </option>
-            {runs.map((r) => (
-              <option key={r.run_id} value={r.run_id}>
-                {r.scenario || "Unknown"} — {r.run_id}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {!run ? (
-        <section className="card detail-empty">
-          <strong>No runs available yet</strong>
-          <p>
-            Start a live run first. It will appear here as soon as its artifact
-            directory is created.
-          </p>
-        </section>
-      ) : (
-        <>
-          <section className="detail-overview">
-            <div className="detail-identity">
-              <span className={`status-dot ${summary?.status}`} />
-              <div>
-                <small>{summary?.scenario || "Unknown scenario"}</small>
-                <h2>{summary?.run_id}</h2>
-                <span className={`status ${summary?.status}`}>
-                  {labels[summary?.status] || summary?.status}
-                </span>
-              </div>
-            </div>
-            <Metric
-              label="Goal"
-              value={
-                summary?.goal_success == null
-                  ? "Pending"
-                  : summary.goal_success
-                    ? "Reached"
-                    : "Not reached"
-              }
-              tone={summary?.goal_success ? "good" : ""}
-            />
-            <Metric
-              label="ROE"
-              value={
-                summary?.roe_compliant == null
-                  ? "Pending"
-                  : summary.roe_compliant
-                    ? "Compliant"
-                    : "Violated"
-              }
-              tone={
-                summary?.roe_compliant
-                  ? "good"
-                  : summary?.roe_compliant === false
-                    ? "bad"
-                    : ""
-              }
-            />
-            <Metric label="Steps" value={String(summary?.steps ?? 0)} />
-            <Metric
-              label="Tokens"
-              value={summary?.tokens_total?.toLocaleString?.() || "—"}
-            />
-            <Metric
-              label="Duration"
-              value={
-                summary?.duration_sec != null
-                  ? `${Math.round(summary.duration_sec)}s`
-                  : "—"
-              }
-            />
-          </section>
-          <div className="detail-grid">
-            <section className="card detail-panel">
-              <div className="card-title">
-                <span>ROE assessment</span>
-                <small>{summary?.violation_count ?? 0} violations</small>
-              </div>
-              <div className="detail-panel-body">
-                <RoeSummary run={summary} actions={actions} />
-                {summary?.termination_reason && (
-                  <p className="termination">
-                    <b>Termination</b>
-                    {summary.termination_reason}
-                  </p>
-                )}
-              </div>
-            </section>
-            <section className="card detail-panel">
-              <div className="card-title">
-                <span>Evidence</span>
-                <small>{artifacts.length} artifacts</small>
-              </div>
-              <div className="evidence-stats">
-                <Metric label="Actions" value={String(actions.length)} />
-                <Metric
-                  label="Phases"
-                  value={String(overlay?.phases?.length ?? 0)}
-                />
-                <Metric
-                  label="Violations"
-                  value={String(
-                    overlay?.roe_violations?.length ??
-                      summary?.violation_count ??
-                      0,
-                  )}
-                />
-              </div>
-            </section>
-          </div>
-          <section className="card detail-actions">
-            <div className="card-title">
-              <span>Action timeline</span>
-              <small>{actions.length} actions</small>
-            </div>
-            {actions.length ? (
-              <div className="detail-action-table">
-                <div className="detail-action-head">
-                  <span>#</span>
-                  <span>Request</span>
-                  <span>Decision</span>
-                  <span>ROE</span>
-                  <span>Tokens</span>
-                </div>
-                {actions.map((a, i) => (
-                  <div className="detail-action-row" key={a.action_id}>
-                    <span>{i + 1}</span>
-                    <span>
-                      <b>{a.method || "ACTION"}</b> {a.path || "—"}
-                      <small>{a.action_id}</small>
-                    </span>
-                  <EventDecision status={a.roe_status} />
-                    <span
-                      className={a.roe_status === "escaped" ? "bad" : "good"}
-                    >
-                      {a.roe_status === "escaped"
-                        ? (a.roe_categories || [a.roe_category || "ROE"]).join(
-                            ", ",
-                          )
-                        : "Clear"}
-                    </span>
-                    <span>
-                      {a.total_tokens != null ? a.total_tokens : "—"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="empty">No actions recorded for this run yet.</p>
-            )}
-          </section>
-        </>
-      )}
-    </main>
-  );
-}
 function Metric({
   label,
   value,
@@ -2455,6 +2131,8 @@ function App() {
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [runs, setRuns] = useState<Run[]>([]);
   const [selected, setSelected] = useState<Run>();
+  const [artifactIds, setArtifactIds] = useState<Set<string>>(new Set());
+  const hasSelectedArtifact = !!selected && artifactIds.has(selected.run_id);
   const [actions, setActions] = useState<Action[]>([]);
   const [live, setLive] = useState<any>();
   const [error, setError] = useState("");
@@ -2531,6 +2209,7 @@ function App() {
           );
         });
         const artifactIds = new Set(artifacts.map((run) => run.run_id));
+        setArtifactIds(artifactIds);
         const stoppingIds = new Set(
           transient
             .filter((run) => ["stopping", "stopped"].includes(run.status))
@@ -2572,7 +2251,7 @@ function App() {
   useEffect(() => {
     setActions([]);
     setLive(undefined);
-    if (!selected) return;
+    if (!selected || !hasSelectedArtifact) return;
     const load = () =>
       api
         .getActions(selected.run_id)
@@ -2598,7 +2277,7 @@ function App() {
       clearInterval(t);
       ss.close();
     };
-  }, [selected?.run_id]);
+  }, [selected?.run_id, hasSelectedArtifact]);
   const liveRuns = useMemo(
     () => runs.filter((r) => !TERMINAL_STATUSES.includes(r.status)),
     [runs],
@@ -2661,7 +2340,7 @@ function App() {
     <div className={`app ${dark ? "dark" : "light"}`}>
       <header className="topbar">
         <img
-          src={dark ? "/logo-for-dark.png" : "/logo.png"}
+          src="/logo.svg"
           alt="Ranger"
         />
         <span className="brand-name">Ranger</span>
@@ -2851,7 +2530,7 @@ function App() {
             run={selected}
             actions={actions}
             live={live}
-            hasArtifact={!!selected && runs.some((r) => r.run_id === selected.run_id)}
+            hasArtifact={hasSelectedArtifact}
           />
       </>
       )}

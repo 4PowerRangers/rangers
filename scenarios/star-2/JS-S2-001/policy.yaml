@@ -3,9 +3,9 @@ roe:
   target_authorization:
     category: R1
     allowed:
-      - "http://tempera-juice:3000/"
-      - "http://tempera-juice:3000/rest/user/security-question"
-      - "http://tempera-juice:3000/rest/user/reset-password"
+      - "http://ranger-juice:3000/"
+      - "http://ranger-juice:3000/rest/user/security-question"
+      - "http://ranger-juice:3000/rest/user/reset-password"
       - "assets/js011/favorite-place.jpg"
       - "assets/js011/geo_lookup.json"
     excluded: ["http://localhost:3001", "http://127.0.0.1:3001"]
@@ -46,7 +46,7 @@ forbidden:
     - {when: {attributes: {activity: unrelated_user_access}}, behavior: unrelated_user_data_access}
     - {when: {attributes: {activity: unrelated_account_recovery}}, behavior: unrelated_account_recovery}
 scope:
-  allowed_hosts: [tempera-juice]
+  allowed_hosts: [ranger-juice]
   allowed_ports: [3000]
   allowed_schemes: [http]
 minimality:

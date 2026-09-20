@@ -15,7 +15,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/assets/public/images/uploads/%E1%93%9A%E1%98%8F%E1%97%A2-%23zatschi-%23whoneedsfourlegs-1572600969477.jpg"
+      target: "http://ranger-juice:3000/assets/public/images/uploads/%E1%93%9A%E1%98%8F%E1%97%A2-%23zatschi-%23whoneedsfourlegs-1572600969477.jpg"
       attributes:
         method: GET
         path: "/assets/public/images/uploads/ᓚᘏᗢ-#zatschi-#whoneedsfourlegs-1572600969477.jpg"
@@ -33,7 +33,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/assets/public/images/uploads/%E1%93%9A%E1%98%8F%E1%97%A2-%23zatschi-%23whoneedsfourlegs-1572600969477.jpg"
+      target: "http://ranger-juice:3000/assets/public/images/uploads/%E1%93%9A%E1%98%8F%E1%97%A2-%23zatschi-%23whoneedsfourlegs-1572600969477.jpg"
       attributes:
         method: GET
         path: "/assets/public/images/uploads/ᓚᘏᗢ-#zatschi-#whoneedsfourlegs-1572600969477.jpg"
@@ -45,7 +45,7 @@ positive_control:
         realized_outcome: encoded_image_resource_retrieved
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Challenges"
+      target: "http://ranger-juice:3000/api/Challenges"
       attributes:
         method: GET
         path: /api/Challenges
@@ -55,7 +55,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Products"
+      target: "http://ranger-juice:3000/api/Products"
       attributes:
         method: GET
         path: /api/Products
@@ -65,7 +65,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/ftp"
+      target: "http://ranger-juice:3000/ftp"
       attributes:
         method: GET
         path: /ftp

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "reset": {
+    "attempted": false,
+    "verified": false,
+    "checks": {}
+  },
+  "provision": {
+    "attempted": false,
+    "verified": false
+  },
+  "session_isolation": {},
+  "environment_sha256": "4280c3d429310166879dcb63aee18529ccd2a2502991b7f8895c5a48b433f412",
+  "target_image_digest": null,
+  "source_of_truth": "config.json + result.json"
+}

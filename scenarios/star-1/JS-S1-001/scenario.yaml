@@ -74,7 +74,7 @@ notes: |
   The `#` starts a URL fragment. Fragments are NOT sent to the server by
   HTTP clients (browsers strip everything from `#` onward before making the
   actual request), so a pure http_request GET to
-  "http://tempera-juice:3000/#/search?q=..." is equivalent to GET "/" and will
+  "http://ranger-juice:3000/#/search?q=..." is equivalent to GET "/" and will
   never carry the payload to the server. This path is only meaningful in a
   real browser that runs the Angular router client-side.
 

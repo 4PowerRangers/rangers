@@ -1,8 +1,8 @@
 name: juice_shop
 description: OWASP Juice Shop CTF environment
 target:
-  base_url: http://rangers-juice:3000
-  container: rangers-juice
+  base_url: http://ranger-juice:3000
+  container: ranger-juice
   # Host-published runtime endpoint for local runs. Evaluation maps this alias
   # to base_url while retaining it under event.attributes.runtime.
   runtime_aliases: [http://127.0.0.1:3001, http://localhost:3001]
@@ -18,7 +18,7 @@ database:
     mode: sequelize_udp
     bind_host: 127.0.0.1
     port: 8765
-    token_env: RANGERS_DB_OBSERVER_TOKEN
+    token_env: RANGER_DB_OBSERVER_TOKEN
 
 # Lifecycle stage rules for evaluate.progress (S1/S2 verified against Juice
 # Shop; S3-S5 are intentionally left out until this environment can produce

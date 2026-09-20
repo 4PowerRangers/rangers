@@ -1,0 +1,145 @@
+- id: AUTH-001
+  family: authentication
+  title: Authentication state and session establishment
+  indicators: [401/403, login form, session cookie, token exchange, unauthenticated response]
+  prerequisites: [reachable web or API surface]
+  investigation_strategy: [identify the authentication boundary, observe the required credential flow, verify session state with a benign identity check, preserve only the minimum credential evidence]
+  success_signals: [authenticated response, stable session state, identity confirmed]
+  failure_signals: [consistent authentication rejection, invalid or expired session, credential flow unavailable]
+  useful_observations: [auth_required, auth_state, session_cookie, token_exchange]
+  related_families: [authorization, jwt_session, api_enumeration]
+  priority: 80
+
+- id: AUTHZ-IDOR-001
+  family: authorization
+  title: Object-level authorization boundary
+  indicators: [object identifier in path/query/body, authenticated endpoint returns user-owned resource, predictable identifier, endpoint serves multiple object instances]
+  prerequisites: [authenticated or otherwise reachable object endpoint]
+  investigation_strategy: [identify which identifier selects the resource, distinguish authentication from authorization, compare controlled identifiers, observe status and body differences, verify ownership enforcement server-side]
+  success_signals: [unauthorized resource returned, access changes only with identifier, ownership boundary not enforced]
+  failure_signals: [consistent authorization rejection, identifier not controllable, resource is public]
+  useful_observations: [object_identifier, api_object_surface, auth_state, authorization_denied]
+  related_families: [authentication, api_enumeration, business_logic]
+  recommended_tool_skills: [PARAMETER_MUTATION, RESPONSE_COMPARE]
+  priority: 100
+
+- id: SQLI-001
+  family: sql_injection
+  title: Relational query input boundary
+  indicators: [SQL-related server error, query-like parameter, quote-sensitive response difference, database error signal]
+  prerequisites: [controllable input reaches a data-backed operation]
+  investigation_strategy: [locate candidate parameters, establish a harmless baseline, compare controlled input response differences, verify the signal is database-specific before escalating]
+  success_signals: [repeatable database-specific error, controlled response difference, query behavior changes with input]
+  failure_signals: [strict validation, identical safe responses, non-database error]
+  useful_observations: [database_error_signal, parameter_surface, response_difference]
+  related_families: [input_validation, information_disclosure, api_enumeration]
+  priority: 70
+
+- id: NOSQL-001
+  family: nosql_injection
+  title: Document-query input boundary
+  indicators: [JSON query fields, operator-shaped input, document-store error, type-sensitive response difference]
+  prerequisites: [controllable structured input reaches a document query]
+  investigation_strategy: [map accepted types and fields, establish a benign baseline, compare validation and response behavior, verify query semantics before escalation]
+  success_signals: [repeatable operator-sensitive behavior, document-query error, authentication or filter behavior changes with structured input]
+  failure_signals: [strict schema validation, input treated as literal data, stable rejection]
+  useful_observations: [json_input, database_error_signal, response_difference]
+  related_families: [authentication, input_validation, api_enumeration]
+  priority: 65
+
+- id: XSS-001
+  family: xss
+  title: User-controlled output context
+  indicators: [reflected user-controlled input, HTML response, script-like output context, client-rendered content]
+  prerequisites: [input is controllable and output is observable]
+  investigation_strategy: [trace the input to its output context, use a harmless unique marker, distinguish reflection from execution, verify context-specific encoding]
+  success_signals: [marker reflected in an executable context, missing context-appropriate encoding, repeatable client-side interpretation]
+  failure_signals: [output encoded for its context, marker absent, reflection occurs only as inert text]
+  useful_observations: [reflection_signal, html_response, client_rendered_output]
+  related_families: [input_validation, information_disclosure]
+  priority: 70
+
+- id: PATH-001
+  family: path_traversal
+  title: File path resolution boundary
+  indicators: [directory/file-like path parameter, download or file-read behavior, path normalization difference]
+  prerequisites: [controllable path-like input reaches file access]
+  investigation_strategy: [identify the path-bearing input, establish an in-scope baseline file, compare normalization behavior, verify returned content belongs to the requested resource]
+  success_signals: [out-of-bound file content returned, path normalization escapes intended root, file boundary not enforced]
+  failure_signals: [canonicalization and root enforcement, allowlisted resource names, consistent rejection]
+  useful_observations: [file_path_parameter, file_response, path_normalization_signal]
+  related_families: [information_disclosure, input_validation]
+  priority: 75
+
+- id: JWT-001
+  family: jwt_session
+  title: Token and session semantics
+  indicators: [JWT-looking token, bearer authorization, session cookie, token claims in response]
+  prerequisites: [token or session artifact is observable]
+  investigation_strategy: [fingerprint the token without retaining secrets, inspect safe metadata and expiry, verify which requests carry the session, compare server-side identity state]
+  success_signals: [stable authenticated identity, claim and server behavior mismatch, token lifecycle weakness]
+  failure_signals: [token rejected consistently, claims align with server state, session expires as expected]
+  useful_observations: [jwt_present, bearer_header, session_cookie, auth_state]
+  related_families: [authentication, authorization]
+  recommended_tool_skills: [JWT_DECODE, HTTP_SESSION_REQUEST]
+  priority: 85
+
+- id: DISC-001
+  family: information_disclosure
+  title: Unintended information exposure
+  indicators: [stack trace, debug detail, sensitive metadata, verbose error, secret-like response field]
+  prerequisites: [response content is observable]
+  investigation_strategy: [classify the exposed data, determine whether it is public or sensitive, reproduce with the smallest request, avoid collecting unrelated data]
+  success_signals: [sensitive data disclosed outside its intended boundary, repeatable verbose error, secret metadata exposed]
+  failure_signals: [generic error, public documentation only, redaction or access control works]
+  useful_observations: [verbose_error, sensitive_field, stack_trace]
+  related_families: [api_enumeration, authorization, path_traversal]
+  priority: 60
+
+- id: BIZ-001
+  family: business_logic
+  title: Workflow and state transition assumptions
+  indicators: [multi-step workflow, client-controlled state, price/role/quantity field, operation succeeds out of order]
+  prerequisites: [observable state transition or workflow]
+  investigation_strategy: [model the intended state machine, identify client-controlled transitions, compare valid and out-of-order requests, verify server-side invariants]
+  success_signals: [invalid transition accepted, invariant changes without authorization, business outcome differs from validated inputs]
+  failure_signals: [server enforces ordering and invariants, state transition rejected consistently]
+  useful_observations: [state_transition, client_controlled_field, workflow_step]
+  related_families: [authorization, input_validation, csrf]
+  priority: 55
+
+- id: INPUT-001
+  family: input_validation
+  title: Input validation and canonicalization
+  indicators: [untrusted parameter, type confusion, inconsistent normalization, validation error]
+  prerequisites: [controllable input and observable response]
+  investigation_strategy: [map accepted type and length boundaries, compare equivalent encodings, observe canonicalization and rejection, connect the difference to a security-relevant sink]
+  success_signals: [unsafe type or encoding accepted, validation differs across equivalent representations, canonicalization bypass]
+  failure_signals: [strict schema and length checks, canonical representation enforced]
+  useful_observations: [parameter_surface, validation_error, normalization_difference]
+  related_families: [sql_injection, nosql_injection, xss, path_traversal]
+  priority: 50
+
+- id: CSRF-001
+  family: csrf
+  title: Cross-origin state-changing request boundary
+  indicators: [state-changing browser request, cookie-based session, missing or weak anti-CSRF signal]
+  prerequisites: [authenticated browser state and state-changing operation]
+  investigation_strategy: [identify the session mechanism, determine whether a request carries ambient credentials, inspect origin and anti-CSRF checks, verify with a non-destructive state transition]
+  success_signals: [state change accepted without required anti-CSRF proof, ambient cookie accepted cross-origin, origin validation absent]
+  failure_signals: [unpredictable anti-CSRF token required, SameSite and origin checks enforced]
+  useful_observations: [state_changing_request, cookie_session, csrf_token_absent]
+  related_families: [authentication, business_logic]
+  priority: 55
+
+- id: API-001
+  family: api_enumeration
+  title: API surface and object collection mapping
+  indicators: [JSON API with ids, discovered links, collection endpoint, repeated object-shaped responses]
+  prerequisites: [reachable API or linked resource]
+  investigation_strategy: [map only objective-relevant routes, identify identifier locations and response schemas, use bounded comparisons, stop when the relevant object surface is understood]
+  success_signals: [new objective-relevant endpoint, identifier semantics established, response schema narrows a hypothesis]
+  failure_signals: [unrelated route, enumeration produces no new signal, endpoint consistently rejects access]
+  useful_observations: [api_object_surface, object_identifier, discovered_endpoint]
+  related_families: [authorization, authentication, information_disclosure]
+  priority: 45

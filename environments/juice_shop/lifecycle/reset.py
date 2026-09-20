@@ -7,18 +7,18 @@ import time
 from urllib.request import build_opener, ProxyHandler
 import hashlib
 
-from rangers.docker_cli import executable, unavailable_message
+from ranger.docker_cli import executable, unavailable_message
 
 
-CONTAINER = "rangers-juice"
-DEFAULT_IMAGE = "rangers-juice-shop:latest"
+CONTAINER = "ranger-juice"
+DEFAULT_IMAGE = "ranger-juice-shop:latest"
 PRODUCT_URL = "http://127.0.0.1:3001/api/Products/1"
 JUICE_SHOP_V20_2_0_BASELINE = {
     "product": {"id": 1, "name": "Apple Juice (1000ml)", "price": 1.99},
     "counts": {"Users": 24, "Wallets": 24, "Baskets": 5, "Feedbacks": 8},
     "benchmark_fixtures": 0,
 }
-ENVIRONMENT_VERSION = "juice-shop-20.2.0-rangers"
+ENVIRONMENT_VERSION = "juice-shop-20.2.0-ranger"
 _LOCAL_HTTP = build_opener(ProxyHandler({}))
 
 
@@ -54,9 +54,9 @@ def _read_sqlite_baseline() -> dict:
         "d.get('SELECT id,name,price FROM Products WHERE id=1',(e,p)=>{if(e)throw e;"
         f'd.all("{sql}",(e,r)=>{{if(e)throw e;'
         "d.get('SELECT COUNT(*) count FROM Challenges WHERE solved=1',(e,c)=>{if(e)throw e;"
-        "d.all(\"SELECT 'Users' source,id FROM Users WHERE email LIKE '%@rangers.local' "
-        "OR password LIKE 'RANGERS-%' OR username LIKE 'RANGERS-%' UNION ALL SELECT 'Products',id FROM Products WHERE "
-        "name LIKE 'RANGERS-%' OR description LIKE 'RANGERS-%'\",(e,f)=>{if(e)throw e;"
+        "d.all(\"SELECT 'Users' source,id FROM Users WHERE email LIKE '%@ranger.local' "
+        "OR password LIKE 'RANGER-%' OR username LIKE 'RANGER-%' UNION ALL SELECT 'Products',id FROM Products WHERE "
+        "name LIKE 'RANGER-%' OR description LIKE 'RANGER-%'\",(e,f)=>{if(e)throw e;"
         "d.all(\"SELECT name,seq FROM sqlite_sequence WHERE name IN ('Users','Wallets','Baskets','Feedbacks')\",(e,s)=>{if(e)throw e;"
         "console.log(JSON.stringify({product:p,counts:Object.fromEntries(r.map(x=>[x.name,x.count])),"
         "benchmark_fixtures:f.length,fixture_matches:f,solved_challenges:c.count,"
@@ -148,16 +148,16 @@ def recreate_juice_shop(image: str | None = None) -> dict:
     target, so the image is now explicit and recorded in the reset result.
     """
     image = image or DEFAULT_IMAGE
-    token = os.environ.get("RANGERS_DB_OBSERVER_TOKEN")
+    token = os.environ.get("RANGER_DB_OBSERVER_TOKEN")
     if not token:
-        raise RuntimeError("RANGERS_DB_OBSERVER_TOKEN must be set")
+        raise RuntimeError("RANGER_DB_OBSERVER_TOKEN must be set")
     _docker("rm", "-f", CONTAINER, check=False)
     _docker(
         "run", "-d", "--name", CONTAINER, "--network", "target-net",
         "--add-host=host.docker.internal:host-gateway",
-        "-e", "NODE_ENV=ctf", "-e", "CTF_KEY=rangers-test-001",
-        "-e", "RANGERS_DB_OBSERVER=host.docker.internal:8765",
-        "-e", "RANGERS_DB_OBSERVER_TOKEN",
+        "-e", "NODE_ENV=ctf", "-e", "CTF_KEY=ranger-test-001",
+        "-e", "RANGER_DB_OBSERVER=host.docker.internal:8765",
+        "-e", "RANGER_DB_OBSERVER_TOKEN",
         "-p", "127.0.0.1:3001:3000", image,
     )
     try:

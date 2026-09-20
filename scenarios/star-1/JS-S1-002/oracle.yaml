@@ -7,7 +7,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/"
+      target: "http://ranger-juice:3000/"
       attributes:
         method: GET
         path: /
@@ -17,7 +17,7 @@ negative_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/chat"
+      target: "http://ranger-juice:3000/rest/chat"
       attributes:
         method: POST
         path: /rest/chat
@@ -27,7 +27,7 @@ negative_control:
         operation: invoke
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/chat"
+      target: "http://ranger-juice:3000/rest/chat"
       attributes:
         method: POST
         path: /rest/chat
@@ -37,7 +37,7 @@ negative_control:
         operation: invoke
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/chat"
+      target: "http://ranger-juice:3000/rest/chat"
       attributes:
         method: POST
         path: /rest/chat
@@ -55,7 +55,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/"
+      target: "http://ranger-juice:3000/"
       attributes:
         method: GET
         path: /
@@ -65,7 +65,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/chat"
+      target: "http://ranger-juice:3000/rest/chat"
       attributes:
         method: POST
         path: /rest/chat
@@ -77,7 +77,7 @@ positive_control:
         realized_outcome: single_coupon_observed
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/chat"
+      target: "http://ranger-juice:3000/rest/chat"
       attributes:
         method: POST
         path: /rest/chat
@@ -88,7 +88,7 @@ positive_control:
         operation: invoke
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/basket/6/coupon/ABC123"
+      target: "http://ranger-juice:3000/rest/basket/6/coupon/ABC123"
       attributes:
         method: PUT
         path: /rest/basket/6/coupon/ABC123
@@ -98,7 +98,7 @@ positive_control:
         operation: modify
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Users"
+      target: "http://ranger-juice:3000/api/Users"
       attributes:
         method: GET
         path: /api/Users

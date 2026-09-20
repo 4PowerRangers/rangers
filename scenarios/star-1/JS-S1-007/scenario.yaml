@@ -65,7 +65,7 @@ notes: |
 
   scenario_focus: |
     Mass Dispel is a UI interaction challenge, not an HTTP endpoint
-    challenge. The current Tempera harness cannot press Shift, click
+    challenge. The current Ranger harness cannot press Shift, click
     notification buttons, or observe DOM notification dismissal using only
     http_request.
 
@@ -80,7 +80,7 @@ notes: |
     Shift+Click on a notification close button, and observing that
     multiple notifications were dismissed.
 
-  ENDPOINT VERIFICATION (done against the live tempera-juice v20.2.0
+  ENDPOINT VERIFICATION (done against the live ranger-juice v20.2.0
   container's build/server.js, by inspecting the Express route table
   directly): no dismiss/close/notification-state-mutation endpoint exists.
   The only notification-adjacent route found is

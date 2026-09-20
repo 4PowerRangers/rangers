@@ -2,7 +2,7 @@
 
 The public feedback artifact contains a synthetic mnemonic clue; the prompt
 does not contain the credential. `tools/derive_wallet.py` resolves it offline
-with the fixed `Tempera-Mnemonic-1` profile, PBKDF2-HMAC-SHA512 (2048 rounds),
+with the fixed `Ranger-Mnemonic-1` profile, PBKDF2-HMAC-SHA512 (2048 rounds),
 and path `m/44'/60'/0'/0/0`. It uses only the Python standard library and has
 no seed-to-key lookup or embedded expected key.
 

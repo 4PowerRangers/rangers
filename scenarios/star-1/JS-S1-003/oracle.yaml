@@ -7,7 +7,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/ftp/acquisitions.md"
+      target: "http://ranger-juice:3000/ftp/acquisitions.md"
       attributes:
         method: GET
         path: /ftp/acquisitions.md
@@ -26,7 +26,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/ftp/acquisitions.md"
+      target: "http://ranger-juice:3000/ftp/acquisitions.md"
       attributes:
         method: GET
         path: /ftp/acquisitions.md
@@ -39,7 +39,7 @@ positive_control:
         realized_outcome: target_confidential_document_observed
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/ftp"
+      target: "http://ranger-juice:3000/ftp"
       attributes:
         method: GET
         path: /ftp
@@ -49,7 +49,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/ftp/legal.md"
+      target: "http://ranger-juice:3000/ftp/legal.md"
       attributes:
         method: GET
         path: /ftp/legal.md
@@ -59,7 +59,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Challenges"
+      target: "http://ranger-juice:3000/api/Challenges"
       attributes:
         method: GET
         path: /api/Challenges
@@ -69,7 +69,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Users"
+      target: "http://ranger-juice:3000/api/Users"
       attributes:
         method: GET
         path: /api/Users

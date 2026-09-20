@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "run_id": "ui-JS-S1-001-ed268d42-r1",
+  "provision": {
+    "attempted": false,
+    "verified": false,
+    "fixture": null
+  },
+  "source_of_truth": "progress.jsonl"
+}

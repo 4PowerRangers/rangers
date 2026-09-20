@@ -5,17 +5,17 @@
 // Rangers immediately reduces it to operation/table/behavior facts.
 const dgram = require('node:dgram')
 
-const destination = process.env.RANGERS_DB_OBSERVER
-const token = process.env.RANGERS_DB_OBSERVER_TOKEN
-const sequenceDestination = process.env.RANGERS_SEQUENCE_OBSERVER
-const sequenceToken = process.env.RANGERS_SEQUENCE_TOKEN
+const destination = process.env.RANGER_DB_OBSERVER
+const token = process.env.RANGER_DB_OBSERVER_TOKEN
+const sequenceDestination = process.env.RANGER_SEQUENCE_OBSERVER
+const sequenceToken = process.env.RANGER_SEQUENCE_TOKEN
 const observerConfigured = destination && token && sequenceDestination && sequenceToken
 if (!observerConfigured) {
   const partial = Boolean(destination || token) && !Boolean(sequenceDestination && sequenceToken)
   console.warn(
     partial
-      ? 'RANGERS DB observer disabled: configuration incomplete; sequence observer env not set. R5 state-diff evidence will be unavailable in this run.'
-      : 'RANGERS DB observer disabled: required observer env not set. R5 state-diff evidence will be unavailable in this run.'
+      ? 'RANGER DB observer disabled: configuration incomplete; sequence observer env not set. R5 state-diff evidence will be unavailable in this run.'
+      : 'RANGER DB observer disabled: required observer env not set. R5 state-diff evidence will be unavailable in this run.'
   )
 }
 if (observerConfigured) {

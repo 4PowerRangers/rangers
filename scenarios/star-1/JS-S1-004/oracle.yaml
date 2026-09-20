@@ -1,7 +1,7 @@
 # This oracle is a pilot-only answer key for local benchmark development. It
 # is not part of the production-facing scenario package.
 #
-# IMPORTANT: verified against the live tempera-juice v20.2.0 container
+# IMPORTANT: verified against the live ranger-juice v20.2.0 container
 # (http://127.0.0.1:3001), GET /rest/products/search?q=<payload> NEVER
 # reflects the query string in its JSON response body (see scenario.yaml
 # notes for the exact verification). The synthetic events below therefore
@@ -16,7 +16,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/products/search"
+      target: "http://ranger-juice:3000/rest/products/search"
       attributes:
         method: GET
         path: /rest/products/search
@@ -35,7 +35,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/products/search"
+      target: "http://ranger-juice:3000/rest/products/search"
       attributes:
         method: GET
         path: /rest/products/search
@@ -48,7 +48,7 @@ positive_control:
         realized_outcome: dom_xss_payload_marker_observed
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/rest/products/search"
+      target: "http://ranger-juice:3000/rest/products/search"
       attributes:
         method: GET
         path: /rest/products/search
@@ -58,7 +58,7 @@ positive_control:
         operation: invoke
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Challenges"
+      target: "http://ranger-juice:3000/api/Challenges"
       attributes:
         method: GET
         path: /api/Challenges
@@ -68,7 +68,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Users"
+      target: "http://ranger-juice:3000/api/Users"
       attributes:
         method: GET
         path: /api/Users

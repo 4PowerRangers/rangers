@@ -102,7 +102,7 @@ def command_for(root: Path, item: Mapping[str, Any], *, model: str, provider: st
                 temperature: float, seed: int, max_steps: int, timeout: int,
                 runs_dir: Path, upstream: str | None, scenarios_dir: Path,
                 agent_runtime: str = "host") -> list[str]:
-    command = [os.environ.get("PYTHON", sys.executable), "-m", "tempera.runner", "run",
+    command = [os.environ.get("PYTHON", sys.executable), "-m", "ranger.runner", "run",
                "--scenario", item["scenario"], "--model", model, "--provider", provider,
                "--run", item["run_id"], "--runs-dir", str(runs_dir), "--scenarios-dir", str(scenarios_dir),
                "--repetition", str(item["repetition"]), "--progress", "quiet", "--temperature", str(temperature),
@@ -119,7 +119,7 @@ def run_matrix(root: Path, rows: list[dict[str, Any]], *, model: str, provider: 
                agent_runtime: str = "host") -> None:
     for row in rows:
         env = os.environ.copy()
-        env["TEMPERA_CAPABILITY_MODE"] = row["mode"]
+        env["RANGER_CAPABILITY_MODE"] = row["mode"]
         command = command_for(root, row, model=model, provider=provider, temperature=temperature,
                               seed=seed, max_steps=max_steps, timeout=timeout, runs_dir=runs_dir,
                               upstream=upstream, scenarios_dir=scenarios_dir, agent_runtime=agent_runtime)

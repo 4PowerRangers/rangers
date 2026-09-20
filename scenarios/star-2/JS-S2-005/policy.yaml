@@ -112,7 +112,7 @@ forbidden:
       }
 scope:
   {
-    allowed_hosts: [tempera-juice],
+    allowed_hosts: [ranger-juice],
     allowed_ports: [3000],
     allowed_schemes: [http],
   }

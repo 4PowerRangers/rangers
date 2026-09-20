@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 from .loader import RunLoader, _lines, _read
 from .models import PressureExperimentConfig, RunConfig
 from .runner import RunnerService
-from Ranger.scenario_paths import iter_scenario_dirs, resolve_scenario_dir
+from ranger.scenario_paths import iter_scenario_dirs, resolve_scenario_dir
 
 ALLOWED_COMMAND_TOOLS = ("python3", "curl", "bash", "sh", "nmap")
 
@@ -42,7 +42,7 @@ load_dotenv(ROOT / ".env", override=False)
 
 def _docker_cli() -> str:
     """Resolve Docker for a backend started outside Docker Desktop's PATH."""
-    configured = os.environ.get("TEMPERA_DOCKER_CLI", "").strip()
+    configured = os.environ.get("RANGER_DOCKER_CLI", "").strip()
     if configured:
         return configured
     discovered = shutil.which("docker")
@@ -156,12 +156,8 @@ def _tcp_probe(host: str, port: int):
 
 @app.get("/api/env/status")
 def env_status(target: str = "http://127.0.0.1:3001"):
-    # The relay is accessed by the host-side console through the published
-    # port. The Docker service name (e.g. tempera-model-relay) is only
-    # resolvable from inside the Docker network. Gateway containers are
-    # created per run, so they are not a preflight dependency here.
-    relay = os.environ.get("TEMPERA_MODEL_ENDPOINT")
-    relay_probe = _http_probe("http://127.0.0.1:8090/healthz") if relay else {"status": "not_configured"}
+    relay = os.environ.get("RANGER_MODEL_ENDPOINT")
+    relay_probe = _http_probe(f"{relay.rstrip('/')}/healthz") if relay else {"status": "not_configured"}
     return {
         "target": _http_probe(f"{target.rstrip('/')}/health"),
         "model_relay": relay_probe,
@@ -187,20 +183,20 @@ def start_environment():
 
     # Target carries per-run observer settings, so a stale existing container
     # must be recreated instead of merely started.
-    subprocess.run([docker, "rm", "-f", "tempera-juice"], capture_output=True, text=True)
-    ensure("tempera-juice", "tempera-juice-shop:latest", [
+    subprocess.run([docker, "rm", "-f", "ranger-juice"], capture_output=True, text=True)
+    ensure("ranger-juice", "ranger-juice-shop:latest", [
         "--network", "target-net", "--add-host=host.docker.internal:host-gateway",
-        "-e", "NODE_ENV=ctf", "-e", "CTF_KEY=tempera-test-001",
-        "-e", "TEMPERA_DB_OBSERVER=host.docker.internal:8765",
-        "-e", "TEMPERA_DB_OBSERVER_TOKEN", "-p", "127.0.0.1:3001:3000",
+        "-e", "NODE_ENV=ctf", "-e", "CTF_KEY=ranger-test-001",
+        "-e", "RANGER_DB_OBSERVER=host.docker.internal:8765",
+        "-e", "RANGER_DB_OBSERVER_TOKEN", "-p", "127.0.0.1:3001:3000",
     ])
-    relay_state = subprocess.run([docker, "inspect", "-f", "{{.State.Running}}", "tempera-model-relay"], capture_output=True, text=True)
+    relay_state = subprocess.run([docker, "inspect", "-f", "{{.State.Running}}", "ranger-model-relay"], capture_output=True, text=True)
     if relay_state.returncode == 0 and relay_state.stdout.strip().lower() != "true":
-        subprocess.run([docker, "rm", "tempera-model-relay"], capture_output=True, text=True)
-    ensure("tempera-model-relay", "tempera-model-relay:stage4", [
-        "-p", "127.0.0.1:8090:8090", "-e", "TEMPERA_MODEL_UPSTREAM",
-        "-e", "TEMPERA_MODEL_ALLOWED_ENDPOINTS", "-e", "DEEPSEEK_API_KEY",
-        "-e", "TEMPERA_PROVIDER=deepseek", "-e", "TEMPERA_MODEL=deepseek-flash",
+        subprocess.run([docker, "rm", "ranger-model-relay"], capture_output=True, text=True)
+    ensure("ranger-model-relay", "ranger-model-relay:stage4", [
+        "-p", "127.0.0.1:8090:8090", "-e", "RANGER_MODEL_UPSTREAM",
+        "-e", "RANGER_MODEL_ALLOWED_ENDPOINTS", "-e", "DEEPSEEK_API_KEY",
+        "-e", "RANGER_PROVIDER=deepseek", "-e", "RANGER_MODEL=deepseek-flash",
     ])
     return {"started": True}
 

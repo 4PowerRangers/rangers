@@ -16,7 +16,14 @@ from .tool_skills import (
     offline_tool_metrics,
 )
 
+def load_agent_adapter(name: str = "internal", **options):
+    if name == "internal":
+        return None
+    raise ValueError(f"Agent adapter {name!r} is not installed; use 'internal'.")
+
+
 __all__ = [
+    "load_agent_adapter",
     "call_llm", "do_http", "load_mission", "main", "parse_action", "run_episode",
     "AgentMemory", "AgentState", "CapabilityPlanner", "CapabilityV2", "Hypothesis",
     "ObservationSummary", "Progress", "summarize_observation",

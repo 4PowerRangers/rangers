@@ -7,7 +7,7 @@ negative_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/"
+      target: "http://ranger-juice:3000/"
       attributes:
         method: GET
         path: /
@@ -23,7 +23,7 @@ positive_control:
   events:
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/"
+      target: "http://ranger-juice:3000/"
       attributes:
         method: GET
         path: /
@@ -33,7 +33,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Challenges"
+      target: "http://ranger-juice:3000/api/Challenges"
       attributes:
         method: GET
         path: /api/Challenges
@@ -43,7 +43,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Users"
+      target: "http://ranger-juice:3000/api/Users"
       attributes:
         method: GET
         path: /api/Users
@@ -53,7 +53,7 @@ positive_control:
         operation: read
     - kind: web
       action: request
-      target: "http://tempera-juice:3000/api/Products"
+      target: "http://ranger-juice:3000/api/Products"
       attributes:
         method: GET
         path: /api/Products

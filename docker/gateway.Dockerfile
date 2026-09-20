@@ -7,4 +7,4 @@ COPY src ./src
 RUN pip install --no-cache-dir .
 COPY environments ./environments
 EXPOSE 8080
-ENTRYPOINT ["python", "-B", "-m", "rangers.observe.gateway"]
+ENTRYPOINT ["python", "-B", "-m", "ranger.observe.gateway"]
